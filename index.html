@@ -1,1097 +1,136 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<title>The ImpossiBLEACH Quiz</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Zen+Dots&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#07070f;
-  --s1:#0f0f1c;
-  --s2:#161626;
-  --s3:#1e1e32;
-  --border:#2c2c48;
-  --o:#ff6b00;
-  --o2:#ffaa00;
-  --b:#3a9eff;
-  --r:#ff2244;
-  --g:#00e87a;
-  --w:#f0f0ff;
-  --m:#7070a0;
-  --gold:#ffd700;
-  --font-d:'Bangers',cursive;
-  --font-a:'Zen Dots',cursive;
-  --font-b:'Nunito',sans-serif;
-  --rad:14px;
-  --rad-sm:8px;
-}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--w);font-family:var(--font-b)}
-
-/* ── CANVAS BG ── */
-#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-
-/* ── WRAPPER ── */
-#wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
-
-/* ── SCREENS ── */
-.screen{display:none;width:100%;max-width:700px}
-.screen.active{display:block}
-
-/* ══ TITLE SCREEN ══ */
-#title-screen{text-align:center}
-.title-eyebrow{font-family:var(--font-a);font-size:13px;letter-spacing:6px;color:var(--m);text-transform:uppercase;margin-bottom:8px}
-.title-logo{position:relative;display:inline-block;margin:0 auto}
-.title-logo-main{
-  font-family:var(--font-d);
-  font-size:clamp(56px,12vw,96px);
-  letter-spacing:8px;
-  line-height:1;
-  display:block;
-  background:linear-gradient(135deg,var(--o) 0%,var(--gold) 45%,var(--o2) 60%,var(--o) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 30px #ff6b0055);
-  animation:logopulse 3s ease-in-out infinite;
-}
-@keyframes logopulse{0%,100%{filter:drop-shadow(0 0 20px #ff6b0044)}50%{filter:drop-shadow(0 0 50px #ff6b0088)}}
-.title-logo-sub{
-  font-family:var(--font-d);
-  font-size:clamp(18px,4vw,28px);
-  letter-spacing:14px;
-  color:var(--b);
-  display:block;
-  margin-top:2px;
-}
-.title-tagline{font-size:15px;color:var(--m);margin:20px 0 8px;letter-spacing:.5px}
-.title-tagline em{color:var(--o);font-style:normal}
-
-.title-badges{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:20px 0 32px}
-.badge{
-  padding:6px 16px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  font-size:13px;
-  color:var(--m);
-  background:var(--s2);
-  display:flex;align-items:center;gap:6px;
-}
-.badge-dot{width:8px;height:8px;border-radius:50%}
-
-.btn-start{
-  font-family:var(--font-d);
-  font-size:36px;
-  letter-spacing:5px;
-  color:#07070f;
-  background:linear-gradient(135deg,var(--o),var(--gold));
-  border:none;
-  border-radius:var(--rad);
-  padding:14px 64px;
-  cursor:pointer;
-  transition:transform .2s,filter .2s;
-  position:relative;
-  overflow:hidden;
-}
-.btn-start::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.25) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s}
-.btn-start:hover{transform:scale(1.06) translateY(-3px);filter:brightness(1.15)}
-.btn-start:hover::after{transform:translateX(100%)}
-.btn-start:active{transform:scale(.97)}
-
-.title-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:28px 0}
-.title-credits{font-size:12px;color:var(--m);opacity:.6;letter-spacing:1px}
-
-/* ══ GAME SCREEN ══ */
-#game-screen{animation:fadein .3s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* HUD */
-.hud{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-.hud-lives{display:flex;gap:5px;align-items:center}
-.hud-heart{
-  width:26px;height:26px;
-  transition:transform .3s,opacity .3s;
-}
-.hud-heart.dead{opacity:.18;transform:scale(.75)}
-.hud-heart svg{width:100%;height:100%;display:block}
-
-.hud-progress{
-  height:6px;
-  background:var(--s3);
-  border-radius:3px;
-  overflow:hidden;
-}
-.hud-progress-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--o),var(--gold));
-  border-radius:3px;
-  transition:width .5s cubic-bezier(.4,0,.2,1);
-}
-
-.hud-right{display:flex;align-items:center;gap:8px}
-.hud-qnum{font-family:var(--font-d);font-size:20px;color:var(--o);letter-spacing:2px}
-
-.hud-skips{display:flex;gap:4px}
-.hud-skip-pip{
-  width:22px;height:22px;
-  border-radius:50%;
-  border:1.5px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;
-  color:var(--m);
-  cursor:default;
-  transition:all .2s;
-}
-.hud-skip-pip.on{border-color:var(--g);color:var(--g);cursor:pointer}
-.hud-skip-pip.on:hover{background:#00e87a22}
-
-/* QUESTION CARD */
-.q-card{
-  background:var(--s1);
-  border:1.5px solid var(--border);
-  border-radius:var(--rad);
-  padding:28px 32px;
-  margin-bottom:16px;
-  min-height:110px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-.q-card::before{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;
-  height:2px;
-  background:linear-gradient(90deg,var(--o),var(--gold),var(--b));
-  border-radius:var(--rad) var(--rad) 0 0;
-}
-#q-text{
-  font-family:var(--font-d);
-  font-size:clamp(20px,4vw,30px);
-  letter-spacing:2px;
-  color:var(--w);
-  text-align:center;
-  line-height:1.35;
-  width:100%;
-}
-#q-text .highlight{
-  color:transparent;
-  cursor:pointer;
-  transition:color .25s,text-shadow .25s;
-  font-family:var(--font-d);
-  font-size:inherit;
-  letter-spacing:inherit;
-  display:inline;
-}
-#q-text .highlight:hover{color:var(--o);text-shadow:0 0 20px var(--o)}
-
-/* ANSWERS */
-.answers{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:14px;
-}
-.ans{
-  background:var(--s2);
-  border:1.5px solid var(--border);
-  border-radius:var(--rad);
-  padding:14px 16px;
-  font-family:var(--font-d);
-  font-size:clamp(14px,2.8vw,20px);
-  letter-spacing:1px;
-  color:var(--w);
-  cursor:pointer;
-  min-height:68px;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;
-  line-height:1.25;
-  transition:border-color .15s,background .15s,transform .15s;
-  position:relative;
-  overflow:hidden;
-}
-.ans::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,var(--o),var(--gold));
-  opacity:0;
-  transition:opacity .15s;
-}
-.ans span{position:relative;z-index:1}
-.ans:hover{border-color:var(--o);transform:translateY(-2px)}
-.ans:hover::before{opacity:.08}
-.ans:active{transform:scale(.97)}
-.ans.correct{border-color:var(--g)!important;background:#00e87a15!important;animation:correct-flash .5s}
-.ans.wrong{border-color:var(--r)!important;animation:wrong-shake .4s}
-@keyframes correct-flash{0%,100%{}50%{background:#00e87a30!important}}
-@keyframes wrong-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
-
-/* SPECIAL ZONES */
-#special-area{margin-bottom:14px}
-
-/* Hidden search */
-.search-field{
-  position:relative;
-  background:var(--s1);
-  border:1.5px solid var(--border);
-  border-radius:var(--rad);
-  height:180px;
-  overflow:hidden;
-}
-.decoy-el{
-  position:absolute;
-  font-family:var(--font-d);
-  font-size:20px;
-  color:transparent;
-  cursor:pointer;
-  padding:8px 12px;
-  transition:color .2s;
-  letter-spacing:1px;
-}
-.decoy-el:hover{color:var(--r)}
-.correct-el{
-  position:absolute;
-  font-size:32px;
-  color:transparent;
-  cursor:pointer;
-  padding:8px;
-  transition:color .2s;
-}
-.correct-el:hover{color:var(--g)}
-
-/* Word cluster */
-.wcluster{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:8px 0}
-.wcitem{
-  padding:10px 20px;
-  border-radius:999px;
-  border:1.5px solid var(--border);
-  font-family:var(--font-d);
-  font-size:18px;
-  letter-spacing:1px;
-  cursor:pointer;
-  background:var(--s2);
-  transition:all .15s;
-}
-.wcitem:hover{border-color:var(--o);background:#ff6b0015;transform:scale(1.05)}
-
-/* Drag/order */
-.drag-list{display:flex;flex-direction:column;gap:8px}
-.drag-item{
-  background:var(--s2);
-  border:1.5px solid var(--border);
-  border-radius:var(--rad-sm);
-  padding:10px 16px;
-  font-family:var(--font-d);
-  font-size:18px;
-  letter-spacing:1px;
-  cursor:grab;
-  display:flex;align-items:center;gap:10px;
-  transition:border-color .15s,background .15s;
-}
-.drag-item:hover{border-color:var(--b)}
-.drag-item.dragging{opacity:.5;border-color:var(--o)}
-.drag-over{border-color:var(--g)!important;background:#00e87a15}
-.drag-handle{color:var(--m);font-size:20px}
-.drag-submit{
-  margin-top:10px;
-  font-family:var(--font-d);
-  font-size:22px;
-  letter-spacing:3px;
-  color:var(--bg);
-  background:var(--b);
-  border:none;border-radius:var(--rad-sm);
-  padding:10px 32px;
-  cursor:pointer;
-  width:100%;
-  transition:filter .15s;
-}
-.drag-submit:hover{filter:brightness(1.15)}
-
-/* Slider */
-.slider-wrap{padding:16px;background:var(--s1);border:1.5px solid var(--border);border-radius:var(--rad)}
-.slider-val{font-family:var(--font-d);font-size:48px;text-align:center;color:var(--o);letter-spacing:4px;margin-bottom:12px}
-.slider-ctrl{width:100%;accent-color:var(--o);height:6px;cursor:pointer}
-.slider-submit{
-  margin-top:12px;
-  font-family:var(--font-d);
-  font-size:22px;
-  letter-spacing:3px;
-  color:var(--bg);
-  background:var(--o);
-  border:none;border-radius:var(--rad-sm);
-  padding:10px 32px;
-  cursor:pointer;
-  width:100%;
-  transition:filter .15s;
-}
-.slider-submit:hover{filter:brightness(1.15)}
-
-/* Mouse avoid */
-.avoid-field{
-  position:relative;
-  height:160px;
-  background:var(--s1);
-  border:1.5px solid var(--border);
-  border-radius:var(--rad);
-  overflow:hidden;
-}
-.avoid-target{
-  position:absolute;
-  padding:10px 20px;
-  border:2px solid var(--g);
-  border-radius:var(--rad-sm);
-  font-family:var(--font-d);
-  font-size:18px;
-  cursor:pointer;
-  background:var(--s2);
-  transition:border-color .2s;
-  white-space:nowrap;
-}
-.avoid-trap{
-  position:absolute;
-  padding:10px 20px;
-  border:2px solid var(--r);
-  border-radius:var(--rad-sm);
-  font-family:var(--font-d);
-  font-size:16px;
-  background:var(--s2);
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-/* Color pick */
-.color-grid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:8px}
-.color-swatch{
-  width:70px;height:70px;
-  border-radius:12px;
-  border:3px solid transparent;
-  cursor:pointer;
-  transition:transform .15s,border-color .15s;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-d);
-  font-size:11px;
-  letter-spacing:.5px;
-  color:rgba(255,255,255,.8);
-  text-shadow:0 1px 4px #0008;
-}
-.color-swatch:hover{transform:scale(1.12);border-color:rgba(255,255,255,.5)}
-
-/* ── TOAST WRONG ── */
-#toast{
-  position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(.7);
-  background:#ff2244dd;
-  border:3px solid var(--r);
-  border-radius:var(--rad);
-  padding:18px 36px;
-  font-family:var(--font-d);
-  font-size:38px;
-  color:#fff;
-  letter-spacing:4px;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity .2s,transform .2s;
-  z-index:500;
-  text-align:center;
-  backdrop-filter:blur(6px);
-}
-#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-
-/* ── COMMENT BOX ── */
-#comment-box{
-  background:var(--s1);
-  border:1.5px solid var(--border);
-  border-left:4px solid var(--b);
-  border-radius:var(--rad-sm);
-  padding:10px 16px;
-  font-size:13px;
-  color:var(--m);
-  margin-bottom:14px;
-  line-height:1.5;
-  min-height:0;
-  opacity:0;
-  transition:opacity .4s;
-}
-#comment-box.show{opacity:1}
-
-/* ── OVERLAYS ── */
-.overlay{
-  position:fixed;inset:0;z-index:300;
-  background:#000000e8;
-  display:none;
-  align-items:center;justify-content:center;flex-direction:column;
-  text-align:center;
-  padding:24px;
-  backdrop-filter:blur(12px);
-}
-.overlay.active{display:flex;animation:fadein .4s ease}
-
-/* GAME OVER */
-#go-title{font-family:var(--font-d);font-size:clamp(60px,14vw,100px);color:var(--r);letter-spacing:6px;filter:drop-shadow(0 0 30px #ff224466);animation:shakeGO .6s ease}
-@keyframes shakeGO{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)scale(1.05)}75%{transform:rotate(4deg)scale(1.05)}}
-#go-q-num{font-family:var(--font-a);font-size:18px;color:var(--m);margin:10px 0 8px}
-#go-stats{display:flex;gap:20px;justify-content:center;margin:16px 0 28px}
-.stat-box{
-  background:var(--s2);
-  border:1px solid var(--border);
-  border-radius:var(--rad-sm);
-  padding:12px 24px;
-  font-family:var(--font-d);
-}
-.stat-label{font-size:13px;color:var(--m);letter-spacing:2px;display:block}
-.stat-val{font-size:32px;color:var(--w);display:block}
-
-/* WIN */
-#win-title{
-  font-family:var(--font-d);
-  font-size:clamp(56px,12vw,88px);
-  letter-spacing:6px;
-  line-height:1;
-  background:linear-gradient(135deg,var(--gold),var(--o),var(--gold));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 30px #ffd70055);
-  animation:logopulse 2s infinite;
-  margin-bottom:8px;
-}
-#win-sub{font-family:var(--font-a);font-size:16px;color:var(--m);margin-bottom:20px}
-#win-stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
-.win-rank{
-  font-family:var(--font-d);
-  font-size:20px;
-  letter-spacing:3px;
-  color:var(--gold);
-  border:2px solid var(--gold);
-  padding:8px 20px;
-  border-radius:var(--rad-sm);
-  margin-bottom:24px;
-  display:inline-block;
-}
-
-.btn-retry{
-  font-family:var(--font-d);
-  font-size:28px;
-  letter-spacing:4px;
-  color:#07070f;
-  background:linear-gradient(135deg,var(--o),var(--gold));
-  border:none;border-radius:var(--rad);
-  padding:12px 52px;
-  cursor:pointer;
-  transition:transform .2s,filter .2s;
-}
-.btn-retry:hover{transform:scale(1.06);filter:brightness(1.1)}
-.btn-retry:active{transform:scale(.97)}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The ImpossiBLEACH Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Shrikhand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-<div id="wrap">
-
-  <!-- TITLE -->
-  <div class="screen active" id="title-screen">
-    <div class="title-eyebrow">GOTEI 13 ENTERTAINMENT PRÉSENTE</div>
-    <div class="title-logo">
-      <span class="title-logo-main">IMPOSSIBLEACH</span>
-      <span class="title-logo-sub">Q U I Z</span>
+  <!-- ═══════════════════════════════════
+       ÉCRAN TITRE
+  ════════════════════════════════════ -->
+  <section id="screen-title" class="screen active" aria-label="Écran titre">
+    <div class="title-impact-lines" aria-hidden="true">
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
     </div>
-    <p class="title-tagline">20 questions. Aucune logique. <em>100% Bleach.</em></p>
-    <p class="title-tagline" style="font-size:13px;margin-top:4px">Si tu perds, c'est Aizen qui gagne. Tu veux vraiment ça ?</p>
-    <div class="title-badges">
-      <div class="badge"><div class="badge-dot" style="background:#ff6b00"></div>20 questions</div>
-      <div class="badge"><div class="badge-dot" style="background:#ff2244"></div>3 vies</div>
-      <div class="badge"><div class="badge-dot" style="background:#00e87a"></div>5 skips</div>
-      <div class="badge"><div class="badge-dot" style="background:#3a9eff"></div>Mécaniques variées</div>
-    </div>
-    <button class="btn-start" id="btn-start">BANKAI !</button>
-    <div class="title-divider"></div>
-    <div class="title-credits">INSPIRÉ DE THE IMPOSSIBLE QUIZ · VERSION BLEACH</div>
-  </div>
 
-  <!-- GAME -->
-  <div class="screen" id="game-screen">
-    <div class="hud">
-      <div class="hud-lives" id="hud-lives"></div>
-      <div class="hud-progress"><div class="hud-progress-fill" id="hud-prog" style="width:0%"></div></div>
-      <div class="hud-right">
-        <div class="hud-qnum" id="hud-qnum">Q.1</div>
-        <div class="hud-skips" id="hud-skips"></div>
+    <div class="title-content">
+      <div class="title-eyebrow">GOTEI 13 ENTERTAINMENT</div>
+
+      <div class="title-logo-wrap">
+        <div class="title-logo-the">THE</div>
+        <div class="title-logo-main">
+          <span class="logo-impos">IMPOSSI</span><span class="logo-bleach">BLEACH</span>
+        </div>
+        <div class="title-logo-quiz">QUIZ</div>
       </div>
+
+      <p class="title-desc">
+        20 questions. Aucune logique. 100% Bleach.<br>
+        <em>Si tu perds, c'est Aizen qui gagne.</em>
+      </p>
+
+      <div class="title-stats" aria-label="Informations du jeu">
+        <div class="stat-pill"><span class="stat-num">20</span><span class="stat-lbl">QUESTIONS</span></div>
+        <div class="stat-pill stat-pill--red"><span class="stat-num">3</span><span class="stat-lbl">VIES</span></div>
+        <div class="stat-pill stat-pill--green"><span class="stat-num">5</span><span class="stat-lbl">SKIPS</span></div>
+      </div>
+
+      <button class="btn-bankai" id="btn-start" aria-label="Démarrer le quiz">
+        <span class="btn-bankai-text">BANKAI !</span>
+        <span class="btn-bankai-sub">APPUIE POUR COMMENCER</span>
+      </button>
+
+      <div class="title-footer">INSPIRÉ DE THE IMPOSSIBLE QUIZ</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       ÉCRAN JEU
+  ════════════════════════════════════ -->
+  <section id="screen-game" class="screen" aria-label="Jeu en cours">
+
+    <!-- HUD -->
+    <header class="hud" role="status" aria-live="polite">
+      <div class="hud-block hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
+
+      <div class="hud-block hud-center">
+        <div class="hud-qnum" id="hud-qnum" aria-label="Numéro de question">Q.1</div>
+        <div class="hud-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="hud-progressbar-fill" id="hud-prog"></div>
+        </div>
+      </div>
+
+      <div class="hud-block hud-right">
+        <div class="hud-score" id="hud-score" aria-label="Score">0 PTS</div>
+        <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
+      </div>
+    </header>
+
+    <!-- QUESTION -->
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="q-num" aria-hidden="true">01</div>
+      <div class="question-text" id="q-text" role="heading" aria-level="2"></div>
     </div>
 
-    <div class="q-card">
-      <div id="q-text">...</div>
+    <!-- COMMENTAIRE (affiché après bonne réponse) -->
+    <div class="comment-bar" id="comment-bar" aria-live="polite" hidden>
+      <span class="comment-icon" aria-hidden="true">💬</span>
+      <span class="comment-text" id="comment-text"></span>
     </div>
 
-    <div id="comment-box"></div>
-    <div id="special-area"></div>
-    <div class="answers" id="answers"></div>
+    <!-- ZONE SPÉCIALE (drag, slider, couleurs, hidden…) -->
+    <div class="special-zone" id="special-zone" hidden></div>
+
+    <!-- RÉPONSES CLASSIQUES -->
+    <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════
+       OVERLAY GAME OVER
+  ════════════════════════════════════ -->
+  <div class="overlay" id="overlay-gameover" aria-modal="true" role="alertdialog" aria-labelledby="go-title" hidden>
+    <div class="overlay-inner overlay-inner--red">
+      <div class="overlay-impact" aria-hidden="true"></div>
+      <h1 class="overlay-title" id="go-title">GAME<br>OVER</h1>
+      <p class="overlay-sub" id="go-sub">Tu t'es arrêté à la question&nbsp;<strong id="go-qnum">?</strong></p>
+      <div class="overlay-stats" id="go-stats"></div>
+      <button class="btn-overlay" id="btn-retry-go">RÉESSAYER</button>
+    </div>
   </div>
 
-</div>
+  <!-- ═══════════════════════════════════
+       OVERLAY VICTOIRE
+  ════════════════════════════════════ -->
+  <div class="overlay" id="overlay-win" aria-modal="true" role="alertdialog" aria-labelledby="win-title" hidden>
+    <div class="overlay-inner overlay-inner--gold">
+      <div class="overlay-impact overlay-impact--gold" aria-hidden="true"></div>
+      <h1 class="overlay-title overlay-title--gold" id="win-title">BANKAI<br>COMPLET !</h1>
+      <p class="overlay-sub">Tu as survécu. Même Aizen est impressionné.</p>
+      <div class="overlay-stats" id="win-stats"></div>
+      <div class="win-rank" id="win-rank"></div>
+      <button class="btn-overlay btn-overlay--gold" id="btn-retry-win">REJOUER</button>
+    </div>
+  </div>
 
-<!-- TOAST -->
-<div id="toast">❌ FAUX !<br><span style="font-size:22px">-1 VIE</span></div>
+  <!-- TOAST MAUVAISE RÉPONSE -->
+  <div class="toast" id="toast" aria-live="assertive" aria-atomic="true">
+    <span class="toast-wrong">✗ FAUX !</span>
+    <span class="toast-life">−1 VIE</span>
+  </div>
 
-<!-- GAME OVER -->
-<div class="overlay" id="overlay-go">
-  <div id="go-title">GAME OVER</div>
-  <div id="go-q-num"></div>
-  <div id="go-stats"></div>
-  <button class="btn-retry" id="btn-retry-go">RÉESSAYER</button>
-</div>
-
-<!-- WIN -->
-<div class="overlay" id="overlay-win">
-  <div id="win-title">BANKAI !</div>
-  <div id="win-sub">Tu as survécu. Même Aizen est impressionné.</div>
-  <div id="win-stats"></div>
-  <div class="win-rank" id="win-rank"></div>
-  <button class="btn-retry" id="btn-retry-win">REJOUER</button>
-</div>
-
-<script>
-(()=>{
-'use strict';
-
-/* ═══════════════════════════════
-   BACKGROUND CANVAS (lignes reiatsu)
-═══════════════════════════════ */
-const canvas=document.getElementById('bg-canvas');
-const ctx=canvas.getContext('2d');
-let W,H,particles=[];
-function resizeCanvas(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;initParticles()}
-function initParticles(){
-  particles=[];
-  const n=Math.floor(W*H/18000);
-  for(let i=0;i<n;i++) particles.push({
-    x:Math.random()*W,y:Math.random()*H,
-    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
-    r:Math.random()*1.5+.3,
-    c:Math.random()<.6?'#ff6b0018':'#3a9eff14',
-    l:Math.random()*60+20
-  });
-}
-function drawBG(){
-  ctx.clearRect(0,0,W,H);
-  particles.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=p.c;
-    ctx.fill();
-  });
-  requestAnimationFrame(drawBG);
-}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();drawBG();
-
-/* ═══════════════════════════════
-   STATE
-═══════════════════════════════ */
-let lives=3,skips=5,qIdx=0,score=0,blocked=false,wrongCount=0,avoidInterval=null;
-
-/* ═══════════════════════════════
-   QUESTIONS
-═══════════════════════════════ */
-const Qs=[
-
-/* 1 */ {
-  text:"COMBIEN DE TROUS DANS UN POLO ?",
-  ans:["1","2","3","4"],
-  ok:2,
-  comment:"3 trous : le col et les deux manches. Le polo Bleach en a 4 si Grimmjow l'a déchiré."
-},
-
-/* 2 */ {
-  text:"EST-CE QU'UN BANKAI PEUT SE VOLER ?",
-  ans:["NON JAMAIS","OUI, LES STERNRITTER LE FONT","SEULEMENT AIZEN","ICHIGO L'A FAIT"],
-  ok:1,
-  comment:"Les Sternritter utilisent le Medallion pour voler les Bankai. Ichigo ne pouvait pas se le faire voler... parce que son Bankai est trop bizarre."
-},
-
-/* 3 — BACKWARDS */ {
-  text:"RÉPONSE : NOISNEP NE TNANGILAM TNEMELLEUTCA TNEMESICÉRP IUQELEC",
-  ans:["AIZEN","YHWACH","GINJO","URAHARA"],
-  ok:0,
-  type:"backwards",
-  comment:"Lu à l'envers : 'CELUI QUI EST PRÉCISÉMENT ACTUELLEMENT MALIGNANT EN PENSION'. Aizen, en prison dorée au Muken."
-},
-
-/* 4 — CLICK LE MOT */ {
-  text:'CLIQUE UNIQUEMENT SUR <span class="highlight" data-correct="1">LE BON ENDROIT</span> POUR PASSER',
-  ans:["BOUTON A","BOUTON B","BOUTON C","BOUTON D"],
-  ok:-1,
-  type:"click-word",
-  comment:"Il fallait cliquer sur 'LE BON ENDROIT' dans la question elle-même."
-},
-
-/* 5 */ {
-  text:"COMBIEN DE DIVISIONS DANS LA GOTEI 13 ?",
-  ans:["10","11","13","15"],
-  ok:2,
-  comment:"13. C'est littéralement dans le nom. GOTEI *13*. T-R-E-I-Z-E."
-},
-
-/* 6 — TROLL LOGIQUE */ {
-  text:"√HOLLOW = ?",
-  ans:["28","MENO","VASTO LORDE","π"],
-  ok:2,
-  comment:"La racine d'un Hollow ? Un être à moitié déchiqueté, donc : Vasto Lorde. Question totalement rationnelle."
-},
-
-/* 7 — MÉMOIRE */ {
-  text:"QUELLE ÉTAIT LA RÉPONSE À LA QUESTION 1 ?",
-  ans:["1","2","3 ← CELLE-LÀ","4"],
-  ok:2,
-  comment:"3 trous dans un polo. Question 1. Mémoire de poisson rouge détectée."
-},
-
-/* 8 — SLIDER */ {
-  text:"COMBIEN DE FOIS ICHIGO PERD-IL SES POUVOIRS AU COURS DE BLEACH ?",
-  ans:[],
-  ok:-1,
-  type:"slider",
-  sliderMin:0,sliderMax:10,sliderCorrect:3,
-  comment:"3 fois : après le combat contre Byakuya, après le combat final contre Aizen, et après le combat contre Ginjo."
-},
-
-/* 9 — HIDDEN */ {
-  text:"TROUVE LA SORTIE CACHÉE !",
-  ans:[],
-  ok:-1,
-  type:"hidden",
-  comment:"Le checkmark ✓ vert était la vraie réponse. Les autres n'étaient que des pièges."
-},
-
-/* 10 — COULEURS */ {
-  text:"QUELLE EST LA COULEUR DU REIATSU DE BYAKUYA ?",
-  ans:[],
-  ok:-1,
-  type:"colors",
-  colorOk:"#e8a0ff",
-  colors:["#ff6622","#3a9eff","#e8a0ff","#00e87a","#ffd700","#ff2244"],
-  colorLabels:["ORANGE","BLEU","VIOLET","VERT","OR","ROUGE"],
-  comment:"Violet (mauve). Ses pétales de Senbonzakura brillent dans cette teinte."
-},
-
-/* 11 */ {
-  text:"QUI EST LE CAPITAINE DE LA 12ÈME DIVISION ?",
-  ans:["KISUKE URAHARA","MAYURI KUROTSUCHI","SZAYELAPORRO","NEMU KUROTSUCHI"],
-  ok:1,
-  comment:"Mayuri Kurotsuchi. Le scientifique le plus inquiétant de toute la Soul Society — et c'est dire."
-},
-
-/* 12 — ORDRE */ {
-  text:"REMETS CES ARCS DANS L'ORDRE CHRONOLOGIQUE",
-  ans:[],
-  ok:-1,
-  type:"drag",
-  items:["SOUL SOCIETY","ARRANCAR","FULLBRING","GUERRE DES MILLE ANS"],
-  correctOrder:[0,1,2,3],
-  comment:"L'ordre est : Soul Society → Arrancar → Fullbring → Guerre des Mille Ans. Simple si tu as tout regardé."
-},
-
-/* 13 — CLICK PAS OBVIOUS */ {
-  text:"NE CLIQUE PAS SUR LA BONNE RÉPONSE",
-  ans:["MAUVAIS","MAUVAIS","BANKAI","MAUVAIS"],
-  ok:2,
-  type:"reverse",
-  comment:"'Ne clique pas sur la bonne réponse' — donc il fallait cliquer dessus. BANKAI."
-},
-
-/* 14 */ {
-  text:"QUEL EST LE VRAI NOM D'URAHARA KISUKE ?",
-  ans:["MR CHAPEAU","URAHARA KISUKE","YORUICHI","MR BONBON"],
-  ok:1,
-  comment:"Urahara Kisuke. Il vend des bonbons mais il s'appelle bien Urahara. (Mr Bonbon est son surnom chez les Hollows.)"
-},
-
-/* 15 — MOUSE AVOID */ {
-  text:"ATTRAPE LE BOUTON... MAIS ÉVITE LES PIÈGES !",
-  ans:[],
-  ok:-1,
-  type:"mouse-avoid",
-  comment:"Il fallait cliquer sur le bouton vert sans toucher les rouges. Comme un shinigami qui esquive."
-},
-
-/* 16 */ {
-  text:"QUE SIGNIFIE 'GETSUGA TENSHO' ?",
-  ans:["LUNE TRANCHANTE","RUGISSEMENT DE LA LUNE DÉVORANTE","CIEL FENDANT","VAGUE LUNAIRE"],
-  ok:1,
-  comment:"Getsuga Tensho = 月牙天衝 = 'Rugissement de la Lune Dévorante / Ciel Percé par la Lune'. Pas juste 'lune tranchante'."
-},
-
-/* 17 */ {
-  text:"CLIQUE SUR LA QUESTION 17.",
-  ans:["Q.17","Q.1","Q.13","Q.0"],
-  ok:0,
-  comment:"C'était la question 17 et tu devais cliquer sur Q.17. Littéralement la réponse la plus évidente possible."
-},
-
-/* 18 — TROLL ABSOLU */ {
-  text:"LEQUEL DE CES PERSONNAGES N'EST PAS MORT (DÉFINITIVEMENT) DANS BLEACH ?",
-  ans:["UKITAKE","UNOHANA","YAMAMOTO","TOUS SONT MORTS"],
-  ok:3,
-  comment:"Techniquement ils meurent tous. Mais dans Bleach, 'définitivement' est un concept flou. Yamamoto le plus clairement, mais Unohana aussi, et Ukitake aussi. Donc : tous."
-},
-
-/* 19 */ {
-  text:"COMBIEN D'YEUX A NNOITRA GILGA ?",
-  ans:["1","2","4","6"],
-  ok:2,
-  comment:"Nnoitra a 4 yeux. Deux yeux normaux + deux yeux sur son casque. Charmant bonhomme."
-},
-
-/* 20 — FINALE */ {
-  text:"QUE DIT ICHIGO DANS PRESQUE TOUS SES COMBATS ?",
-  ans:["'JE VAIS TE TUER'","'BANKAI!'","'JE PROTÈGERAI CEUX QUI ME SONT CHERS'","'GETSUGA TENSHO !'"],
-  ok:2,
-  comment:"Son arc narratif entier, résumé en une phrase. Protéger ceux à qui il tient — même au prix de tout."
-}
-
-];
-
-/* ═══════════════════════════════
-   UTILS
-═══════════════════════════════ */
-const $=id=>document.getElementById(id);
-function showToast(msg){
-  const t=$('toast');
-  if(msg)t.innerHTML=msg;
-  else t.innerHTML='❌ FAUX !<br><span style="font-size:22px">-1 VIE</span>';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),1300);
-}
-function setComment(txt,show){
-  const box=$('comment-box');
-  box.textContent=txt;
-  box.classList.toggle('show',!!show);
-}
-
-function loseLife(el){
-  if(lives<=0)return;
-  lives--;wrongCount++;
-  if(el)el.classList.add('wrong');
-  renderHUD();
-  showToast();
-  if(lives<=0){setTimeout(showGameOver,1000);return}
-}
-
-function correct(el){
-  blocked=true;
-  if(el)el.classList.add('correct');
-  score+=10;
-  const q=Qs[qIdx];
-  if(q.comment){setComment(q.comment,true);setTimeout(()=>{setComment('',false);advanceQ()},1800)}
-  else setTimeout(advanceQ,500);
-}
-
-function advanceQ(){
-  qIdx++;
-  blocked=false;
-  if(qIdx>=Qs.length){showWin();return}
-  renderQ();
-}
-
-function renderHUD(){
-  const hl=$('hud-lives');
-  hl.innerHTML='';
-  for(let i=0;i<3;i++){
-    const d=document.createElement('div');
-    d.className='hud-heart'+(i>=lives?' dead':'');
-    d.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<lives?'#ff6b00':'#2c2c48'}"/>
-    </svg>`;
-    hl.appendChild(d);
-  }
-  $('hud-prog').style.width=(qIdx/Qs.length*100)+'%';
-  $('hud-qnum').textContent='Q.'+(qIdx+1);
-  const hs=$('hud-skips');
-  hs.innerHTML='';
-  for(let i=0;i<5;i++){
-    const d=document.createElement('div');
-    d.className='hud-skip-pip'+(i<skips?' on':'');
-    d.textContent='▶';
-    if(i<skips)d.addEventListener('click',doSkip);
-    hs.appendChild(d);
-  }
-}
-function doSkip(){
-  if(skips<=0||blocked)return;
-  skips--;score=Math.max(0,score-5);
-  advanceQ();
-}
-
-/* ═══════════════════════════════
-   RENDER QUESTION
-═══════════════════════════════ */
-function renderQ(){
-  clearInterval(avoidInterval);
-  const q=Qs[qIdx];
-  setComment('',false);
-  $('q-text').innerHTML=q.text;
-  $('q-text').style.transform='';
-  const sa=$('special-area');
-  const ag=$('answers');
-  sa.innerHTML='';ag.innerHTML='';
-  sa.style.display='none';
-  ag.style.display='grid';
-  renderHUD();
-
-  switch(q.type){
-    case'backwards': $('q-text').style.transform='scaleX(-1)';renderNormal(q);break;
-    case'click-word': renderNormal(q,true);setupClickWord();break;
-    case'reverse': renderReverse(q);break;
-    case'slider': renderSlider(q);break;
-    case'hidden': renderHidden();break;
-    case'colors': renderColors(q);break;
-    case'drag': renderDrag(q);break;
-    case'mouse-avoid': renderAvoid();break;
-    default: renderNormal(q);
-  }
-}
-
-function renderNormal(q,disableAll){
-  const ag=$('answers');
-  q.ans.forEach((a,i)=>{
-    const b=document.createElement('button');
-    b.className='ans';
-    b.innerHTML=`<span>${a}</span>`;
-    b.addEventListener('click',()=>{
-      if(blocked)return;
-      if(disableAll){loseLife(b);return}
-      if(i===q.ok)correct(b);
-      else loseLife(b);
-    });
-    ag.appendChild(b);
-  });
-}
-
-function renderReverse(q){
-  const ag=$('answers');
-  q.ans.forEach((a,i)=>{
-    const b=document.createElement('button');
-    b.className='ans';
-    b.innerHTML=`<span>${a}</span>`;
-    b.addEventListener('click',()=>{
-      if(blocked)return;
-      // reverse: cliquer sur la bonne réponse = perd, ne pas cliquer = impossible
-      // Ici on veut que i===q.ok soit LA bonne à cliquer malgré la formulation
-      if(i===q.ok)correct(b);
-      else loseLife(b);
-    });
-    ag.appendChild(b);
-  });
-}
-
-function setupClickWord(){
-  const hw=document.querySelector('#q-text .highlight');
-  if(!hw)return;
-  hw.addEventListener('click',e=>{
-    if(blocked)return;
-    e.stopPropagation();
-    blocked=true;
-    hw.style.color='var(--g)';
-    score+=10;
-    const q=Qs[qIdx];
-    if(q.comment){setComment(q.comment,true);setTimeout(()=>{setComment('',false);advanceQ()},1800)}
-    else setTimeout(advanceQ,500);
-  });
-}
-
-function renderSlider(q){
-  $('answers').style.display='none';
-  const sa=$('special-area');sa.style.display='block';
-  sa.innerHTML=`<div class="slider-wrap">
-    <div class="slider-val" id="sl-val">${q.sliderCorrect}</div>
-    <input type="range" class="slider-ctrl" id="sl-ctrl" min="${q.sliderMin}" max="${q.sliderMax}" step="1" value="${q.sliderCorrect}">
-    <button class="slider-submit" id="sl-sub">VALIDER</button>
-  </div>`;
-  const ctrl=$('sl-ctrl');const val=$('sl-val');
-  ctrl.addEventListener('input',()=>{val.textContent=ctrl.value});
-  $('sl-sub').addEventListener('click',()=>{
-    if(blocked)return;
-    if(parseInt(ctrl.value)===q.sliderCorrect)correct($('sl-sub'));
-    else loseLife($('sl-sub'));
-  });
-}
-
-function renderHidden(){
-  $('answers').style.display='none';
-  const sa=$('special-area');sa.style.display='block';
-  const field=document.createElement('div');field.className='search-field';
-  const decoys=[
-    {t:'NOPE',x:8,y:12},{t:'NON',x:55,y:58},{t:'CHERCHE',x:20,y:72},
-    {t:':(', x:72,y:18},{t:'X',x:5,y:55},{t:'PAS LÀ',x:60,y:78},
-    {t:'...',x:35,y:35},{t:'ESSAIE',x:78,y:50}
-  ];
-  decoys.forEach(d=>{
-    const el=document.createElement('div');
-    el.className='decoy-el';
-    el.style.left=d.x+'%';el.style.top=d.y+'%';
-    el.textContent=d.t;
-    el.addEventListener('click',()=>{if(blocked)return;loseLife()});
-    field.appendChild(el);
-  });
-  const ok=document.createElement('div');
-  ok.className='correct-el';ok.textContent='✓';
-  ok.style.left='46%';ok.style.top='40%';
-  ok.addEventListener('click',()=>{if(blocked)return;correct(ok)});
-  field.appendChild(ok);
-  sa.appendChild(field);
-}
-
-function renderColors(q){
-  $('answers').style.display='none';
-  const sa=$('special-area');sa.style.display='block';
-  const grid=document.createElement('div');grid.className='color-grid';
-  q.colors.forEach((c,i)=>{
-    const sw=document.createElement('div');
-    sw.className='color-swatch';
-    sw.style.background=c;
-    sw.textContent=q.colorLabels[i];
-    sw.addEventListener('click',()=>{
-      if(blocked)return;
-      if(c===q.colorOk)correct(sw);
-      else loseLife(sw);
-    });
-    grid.appendChild(sw);
-  });
-  sa.appendChild(grid);
-}
-
-function renderDrag(q){
-  $('answers').style.display='none';
-  const sa=$('special-area');sa.style.display='block';
-  let order=[...q.items];
-  const list=document.createElement('div');list.className='drag-list';
-  let dragSrc=null;
-
-  function rebuildList(){
-    list.innerHTML='';
-    order.forEach((item,i)=>{
-      const div=document.createElement('div');
-      div.className='drag-item';
-      div.draggable=true;
-      div.dataset.i=i;
-      div.innerHTML=`<span class="drag-handle">⠿</span><span>${item}</span>`;
-      div.addEventListener('dragstart',e=>{dragSrc=i;div.classList.add('dragging')});
-      div.addEventListener('dragend',()=>div.classList.remove('dragging'));
-      div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over')});
-      div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));
-      div.addEventListener('drop',e=>{
-        e.preventDefault();div.classList.remove('drag-over');
-        if(dragSrc===null||dragSrc===i)return;
-        const tmp=order[dragSrc];order[dragSrc]=order[i];order[i]=tmp;
-        rebuildList();
-      });
-      list.appendChild(div);
-    });
-  }
-  rebuildList();
-  const sub=document.createElement('button');sub.className='drag-submit';sub.textContent='VALIDER L\'ORDRE';
-  sub.addEventListener('click',()=>{
-    if(blocked)return;
-    const isOk=q.correctOrder.every((ci,pos)=>order[pos]===q.items[ci]);
-    if(isOk)correct(sub);else loseLife(sub);
-  });
-  sa.appendChild(list);sa.appendChild(sub);
-}
-
-function renderAvoid(){
-  $('answers').style.display='none';
-  const sa=$('special-area');sa.style.display='block';
-  const field=document.createElement('div');field.className='avoid-field';
-  const target=document.createElement('div');
-  target.className='avoid-target';
-  target.textContent='CLIQUE ICI';
-  target.style.left='10px';target.style.top='20px';
-  let tx=10,ty=20;
-  let moving=false;
-  target.addEventListener('mouseenter',()=>{
-    if(moving)return;moving=true;
-    avoidInterval=setInterval(()=>{
-      tx=Math.random()*(field.offsetWidth-140);
-      ty=Math.random()*(field.offsetHeight-50);
-      target.style.left=tx+'px';target.style.top=ty+'px';
-    },400);
-  });
-  target.addEventListener('click',()=>{
-    if(blocked)return;
-    clearInterval(avoidInterval);
-    correct(target);
-  });
-  const traps=[
-    {t:'TOUCHE PAS',l:'55%',tp:'10%'},
-    {t:'FAUX BOUTON',l:'45%',tp:'60%'},
-    {t:'PIÈGE',l:'5%',tp:'55%'},
-  ];
-  traps.forEach(trap=>{
-    const el=document.createElement('div');
-    el.className='avoid-trap';
-    el.style.left=trap.l;el.style.top=trap.tp;
-    el.textContent=trap.t;
-    el.addEventListener('click',()=>{if(blocked)return;loseLife()});
-    field.appendChild(el);
-  });
-  field.appendChild(target);
-  sa.appendChild(field);
-}
-
-/* ═══════════════════════════════
-   OVERLAYS
-═══════════════════════════════ */
-function showGameOver(){
-  clearInterval(avoidInterval);
-  $('go-q-num').textContent='Bloqué à la question '+(qIdx+1)+' / '+Qs.length;
-  $('go-stats').innerHTML=`
-    <div class="stat-box"><span class="stat-label">SCORE</span><span class="stat-val">${score}</span></div>
-    <div class="stat-box"><span class="stat-label">ERREURS</span><span class="stat-val">${wrongCount}</span></div>
-    <div class="stat-box"><span class="stat-label">QUESTION</span><span class="stat-val">${qIdx+1}</span></div>`;
-  $('overlay-go').classList.add('active');
-}
-function showWin(){
-  clearInterval(avoidInterval);
-  const rank=score>=180?'GRADE : CAPITAINE':score>=140?'GRADE : LIEUTENANT':score>=100?'GRADE : SEATED OFFICER':'GRADE : 5ÈME SEAT';
-  $('win-stats').innerHTML=`
-    <div class="stat-box"><span class="stat-label">SCORE FINAL</span><span class="stat-val">${score}</span></div>
-    <div class="stat-box"><span class="stat-label">ERREURS</span><span class="stat-val">${wrongCount}</span></div>
-    <div class="stat-box"><span class="stat-label">SKIPS RESTANTS</span><span class="stat-val">${skips}</span></div>`;
-  $('win-rank').textContent=rank;
-  $('overlay-win').classList.add('active');
-}
-
-function restart(){
-  lives=3;skips=5;qIdx=0;score=0;blocked=false;wrongCount=0;
-  clearInterval(avoidInterval);
-  $('overlay-go').classList.remove('active');
-  $('overlay-win').classList.remove('active');
-  setComment('',false);
-  renderQ();
-}
-
-/* ═══════════════════════════════
-   INIT
-═══════════════════════════════ */
-$('btn-start').addEventListener('click',()=>{
-  $('title-screen').classList.remove('active');
-  $('game-screen').classList.add('active');
-  renderQ();
-});
-$('btn-retry-go').addEventListener('click',restart);
-$('btn-retry-win').addEventListener('click',restart);
-
-})();
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
