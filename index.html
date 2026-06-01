@@ -3,911 +3,1093 @@
 <head>
 <meta charset="utf-8">
 <title>The ImpossiBLEACH Quiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Zen+Dots&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --card: #1a1a26;
-  --border: #2a2a40;
-  --orange: #ff6b1a;
-  --orange-glow: #ff6b1a44;
-  --blue: #4da6ff;
-  --blue-glow: #4da6ff33;
-  --red: #ff3333;
-  --green: #33ff88;
-  --gold: #ffd700;
-  --text: #f0f0ff;
-  --muted: #8888aa;
-  --font-title: 'Bangers', cursive;
-  --font-body: 'Nunito', sans-serif;
-  --radius: 12px;
-  --transition: 0.18s ease;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070f;
+  --s1:#0f0f1c;
+  --s2:#161626;
+  --s3:#1e1e32;
+  --border:#2c2c48;
+  --o:#ff6b00;
+  --o2:#ffaa00;
+  --b:#3a9eff;
+  --r:#ff2244;
+  --g:#00e87a;
+  --w:#f0f0ff;
+  --m:#7070a0;
+  --gold:#ffd700;
+  --font-d:'Bangers',cursive;
+  --font-a:'Zen Dots',cursive;
+  --font-b:'Nunito',sans-serif;
+  --rad:14px;
+  --rad-sm:8px;
 }
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--w);font-family:var(--font-b)}
 
-html, body {
-  width: 100%; height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  overflow: hidden;
-  user-select: none;
+/* ── CANVAS BG ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── WRAPPER ── */
+#wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:700px}
+.screen.active{display:block}
+
+/* ══ TITLE SCREEN ══ */
+#title-screen{text-align:center}
+.title-eyebrow{font-family:var(--font-a);font-size:13px;letter-spacing:6px;color:var(--m);text-transform:uppercase;margin-bottom:8px}
+.title-logo{position:relative;display:inline-block;margin:0 auto}
+.title-logo-main{
+  font-family:var(--font-d);
+  font-size:clamp(56px,12vw,96px);
+  letter-spacing:8px;
+  line-height:1;
+  display:block;
+  background:linear-gradient(135deg,var(--o) 0%,var(--gold) 45%,var(--o2) 60%,var(--o) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px #ff6b0055);
+  animation:logopulse 3s ease-in-out infinite;
 }
-
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(ellipse 60% 40% at 50% 0%, #ff6b1a11 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 80% 100%, #4da6ff0a 0%, transparent 50%);
+@keyframes logopulse{0%,100%{filter:drop-shadow(0 0 20px #ff6b0044)}50%{filter:drop-shadow(0 0 50px #ff6b0088)}}
+.title-logo-sub{
+  font-family:var(--font-d);
+  font-size:clamp(18px,4vw,28px);
+  letter-spacing:14px;
+  color:var(--b);
+  display:block;
+  margin-top:2px;
 }
+.title-tagline{font-size:15px;color:var(--m);margin:20px 0 8px;letter-spacing:.5px}
+.title-tagline em{color:var(--o);font-style:normal}
 
-#app {
-  width: 640px;
-  max-width: 100vw;
-  padding: 0 16px;
+.title-badges{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:20px 0 32px}
+.badge{
+  padding:6px 16px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  font-size:13px;
+  color:var(--m);
+  background:var(--s2);
+  display:flex;align-items:center;gap:6px;
 }
+.badge-dot{width:8px;height:8px;border-radius:50%}
 
-/* ── TITLE SCREEN ── */
-#screen-title {
-  text-align: center;
-  animation: fadeIn 0.6s ease;
+.btn-start{
+  font-family:var(--font-d);
+  font-size:36px;
+  letter-spacing:5px;
+  color:#07070f;
+  background:linear-gradient(135deg,var(--o),var(--gold));
+  border:none;
+  border-radius:var(--rad);
+  padding:14px 64px;
+  cursor:pointer;
+  transition:transform .2s,filter .2s;
+  position:relative;
+  overflow:hidden;
 }
+.btn-start::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.25) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s}
+.btn-start:hover{transform:scale(1.06) translateY(-3px);filter:brightness(1.15)}
+.btn-start:hover::after{transform:translateX(100%)}
+.btn-start:active{transform:scale(.97)}
 
-.logo-wrap {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 8px;
+.title-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:28px 0}
+.title-credits{font-size:12px;color:var(--m);opacity:.6;letter-spacing:1px}
+
+/* ══ GAME SCREEN ══ */
+#game-screen{animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* HUD */
+.hud{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
 }
-
-.logo-bg {
-  font-family: var(--font-title);
-  font-size: 22px;
-  letter-spacing: 4px;
-  color: var(--muted);
-  text-transform: uppercase;
-  display: block;
+.hud-lives{display:flex;gap:5px;align-items:center}
+.hud-heart{
+  width:26px;height:26px;
+  transition:transform .3s,opacity .3s;
 }
+.hud-heart.dead{opacity:.18;transform:scale(.75)}
+.hud-heart svg{width:100%;height:100%;display:block}
 
-.logo-main {
-  font-family: var(--font-title);
-  font-size: clamp(52px, 10vw, 80px);
-  letter-spacing: 6px;
-  line-height: 1;
-  background: linear-gradient(135deg, var(--orange) 0%, var(--gold) 50%, var(--orange) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: block;
-  text-shadow: none;
-  filter: drop-shadow(0 0 20px var(--orange-glow));
-  animation: pulse-logo 3s ease-in-out infinite;
+.hud-progress{
+  height:6px;
+  background:var(--s3);
+  border-radius:3px;
+  overflow:hidden;
 }
-
-@keyframes pulse-logo {
-  0%, 100% { filter: drop-shadow(0 0 20px var(--orange-glow)); }
-  50% { filter: drop-shadow(0 0 40px #ff6b1a88); }
-}
-
-.logo-sub {
-  font-family: var(--font-title);
-  font-size: 22px;
-  letter-spacing: 8px;
-  color: var(--blue);
-  display: block;
-  margin-top: 4px;
-}
-
-.tagline {
-  font-size: 14px;
-  color: var(--muted);
-  margin: 20px 0 32px;
-  letter-spacing: 1px;
-}
-
-.btn-start {
-  font-family: var(--font-title);
-  font-size: 32px;
-  letter-spacing: 4px;
-  color: var(--bg);
-  background: linear-gradient(135deg, var(--orange), var(--gold));
-  border: none;
-  border-radius: var(--radius);
-  padding: 14px 56px;
-  cursor: pointer;
-  transition: transform var(--transition), box-shadow var(--transition);
-  box-shadow: 0 4px 24px var(--orange-glow);
-}
-.btn-start:hover { transform: scale(1.06) translateY(-2px); box-shadow: 0 8px 40px #ff6b1a66; }
-.btn-start:active { transform: scale(0.97); }
-
-.title-deco {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 28px;
-  font-size: 13px;
-  color: var(--muted);
-}
-.title-deco span { display: flex; align-items: center; gap: 6px; }
-.deco-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
-.deco-dot.blue { background: var(--blue); }
-.deco-dot.green { background: var(--green); }
-
-/* ── GAME SCREEN ── */
-#screen-game { display: none; animation: fadeIn 0.4s ease; }
-
-.hud {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+.hud-progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--o),var(--gold));
+  border-radius:3px;
+  transition:width .5s cubic-bezier(.4,0,.2,1);
 }
 
-.hud-lives {
-  display: flex;
-  gap: 6px;
-  align-items: center;
+.hud-right{display:flex;align-items:center;gap:8px}
+.hud-qnum{font-family:var(--font-d);font-size:20px;color:var(--o);letter-spacing:2px}
+
+.hud-skips{display:flex;gap:4px}
+.hud-skip-pip{
+  width:22px;height:22px;
+  border-radius:50%;
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;
+  color:var(--m);
+  cursor:default;
+  transition:all .2s;
+}
+.hud-skip-pip.on{border-color:var(--g);color:var(--g);cursor:pointer}
+.hud-skip-pip.on:hover{background:#00e87a22}
+
+/* QUESTION CARD */
+.q-card{
+  background:var(--s1);
+  border:1.5px solid var(--border);
+  border-radius:var(--rad);
+  padding:28px 32px;
+  margin-bottom:16px;
+  min-height:110px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.q-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--o),var(--gold),var(--b));
+  border-radius:var(--rad) var(--rad) 0 0;
+}
+#q-text{
+  font-family:var(--font-d);
+  font-size:clamp(20px,4vw,30px);
+  letter-spacing:2px;
+  color:var(--w);
+  text-align:center;
+  line-height:1.35;
+  width:100%;
+}
+#q-text .highlight{
+  color:transparent;
+  cursor:pointer;
+  transition:color .25s,text-shadow .25s;
+  font-family:var(--font-d);
+  font-size:inherit;
+  letter-spacing:inherit;
+  display:inline;
+}
+#q-text .highlight:hover{color:var(--o);text-shadow:0 0 20px var(--o)}
+
+/* ANSWERS */
+.answers{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+.ans{
+  background:var(--s2);
+  border:1.5px solid var(--border);
+  border-radius:var(--rad);
+  padding:14px 16px;
+  font-family:var(--font-d);
+  font-size:clamp(14px,2.8vw,20px);
+  letter-spacing:1px;
+  color:var(--w);
+  cursor:pointer;
+  min-height:68px;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  line-height:1.25;
+  transition:border-color .15s,background .15s,transform .15s;
+  position:relative;
+  overflow:hidden;
+}
+.ans::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--o),var(--gold));
+  opacity:0;
+  transition:opacity .15s;
+}
+.ans span{position:relative;z-index:1}
+.ans:hover{border-color:var(--o);transform:translateY(-2px)}
+.ans:hover::before{opacity:.08}
+.ans:active{transform:scale(.97)}
+.ans.correct{border-color:var(--g)!important;background:#00e87a15!important;animation:correct-flash .5s}
+.ans.wrong{border-color:var(--r)!important;animation:wrong-shake .4s}
+@keyframes correct-flash{0%,100%{}50%{background:#00e87a30!important}}
+@keyframes wrong-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+
+/* SPECIAL ZONES */
+#special-area{margin-bottom:14px}
+
+/* Hidden search */
+.search-field{
+  position:relative;
+  background:var(--s1);
+  border:1.5px solid var(--border);
+  border-radius:var(--rad);
+  height:180px;
+  overflow:hidden;
+}
+.decoy-el{
+  position:absolute;
+  font-family:var(--font-d);
+  font-size:20px;
+  color:transparent;
+  cursor:pointer;
+  padding:8px 12px;
+  transition:color .2s;
+  letter-spacing:1px;
+}
+.decoy-el:hover{color:var(--r)}
+.correct-el{
+  position:absolute;
+  font-size:32px;
+  color:transparent;
+  cursor:pointer;
+  padding:8px;
+  transition:color .2s;
+}
+.correct-el:hover{color:var(--g)}
+
+/* Word cluster */
+.wcluster{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:8px 0}
+.wcitem{
+  padding:10px 20px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  font-family:var(--font-d);
+  font-size:18px;
+  letter-spacing:1px;
+  cursor:pointer;
+  background:var(--s2);
+  transition:all .15s;
+}
+.wcitem:hover{border-color:var(--o);background:#ff6b0015;transform:scale(1.05)}
+
+/* Drag/order */
+.drag-list{display:flex;flex-direction:column;gap:8px}
+.drag-item{
+  background:var(--s2);
+  border:1.5px solid var(--border);
+  border-radius:var(--rad-sm);
+  padding:10px 16px;
+  font-family:var(--font-d);
+  font-size:18px;
+  letter-spacing:1px;
+  cursor:grab;
+  display:flex;align-items:center;gap:10px;
+  transition:border-color .15s,background .15s;
+}
+.drag-item:hover{border-color:var(--b)}
+.drag-item.dragging{opacity:.5;border-color:var(--o)}
+.drag-over{border-color:var(--g)!important;background:#00e87a15}
+.drag-handle{color:var(--m);font-size:20px}
+.drag-submit{
+  margin-top:10px;
+  font-family:var(--font-d);
+  font-size:22px;
+  letter-spacing:3px;
+  color:var(--bg);
+  background:var(--b);
+  border:none;border-radius:var(--rad-sm);
+  padding:10px 32px;
+  cursor:pointer;
+  width:100%;
+  transition:filter .15s;
+}
+.drag-submit:hover{filter:brightness(1.15)}
+
+/* Slider */
+.slider-wrap{padding:16px;background:var(--s1);border:1.5px solid var(--border);border-radius:var(--rad)}
+.slider-val{font-family:var(--font-d);font-size:48px;text-align:center;color:var(--o);letter-spacing:4px;margin-bottom:12px}
+.slider-ctrl{width:100%;accent-color:var(--o);height:6px;cursor:pointer}
+.slider-submit{
+  margin-top:12px;
+  font-family:var(--font-d);
+  font-size:22px;
+  letter-spacing:3px;
+  color:var(--bg);
+  background:var(--o);
+  border:none;border-radius:var(--rad-sm);
+  padding:10px 32px;
+  cursor:pointer;
+  width:100%;
+  transition:filter .15s;
+}
+.slider-submit:hover{filter:brightness(1.15)}
+
+/* Mouse avoid */
+.avoid-field{
+  position:relative;
+  height:160px;
+  background:var(--s1);
+  border:1.5px solid var(--border);
+  border-radius:var(--rad);
+  overflow:hidden;
+}
+.avoid-target{
+  position:absolute;
+  padding:10px 20px;
+  border:2px solid var(--g);
+  border-radius:var(--rad-sm);
+  font-family:var(--font-d);
+  font-size:18px;
+  cursor:pointer;
+  background:var(--s2);
+  transition:border-color .2s;
+  white-space:nowrap;
+}
+.avoid-trap{
+  position:absolute;
+  padding:10px 20px;
+  border:2px solid var(--r);
+  border-radius:var(--rad-sm);
+  font-family:var(--font-d);
+  font-size:16px;
+  background:var(--s2);
+  cursor:pointer;
+  white-space:nowrap;
 }
 
-.life-icon {
-  width: 28px; height: 28px;
-  transition: transform 0.3s, opacity 0.3s;
+/* Color pick */
+.color-grid{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:8px}
+.color-swatch{
+  width:70px;height:70px;
+  border-radius:12px;
+  border:3px solid transparent;
+  cursor:pointer;
+  transition:transform .15s,border-color .15s;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);
+  font-size:11px;
+  letter-spacing:.5px;
+  color:rgba(255,255,255,.8);
+  text-shadow:0 1px 4px #0008;
 }
-.life-icon svg { width: 100%; height: 100%; }
-.life-icon.lost { opacity: 0.2; transform: scale(0.8); }
+.color-swatch:hover{transform:scale(1.12);border-color:rgba(255,255,255,.5)}
 
-.hud-q {
-  font-family: var(--font-title);
-  font-size: 22px;
-  color: var(--orange);
-  letter-spacing: 2px;
+/* ── TOAST WRONG ── */
+#toast{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(.7);
+  background:#ff2244dd;
+  border:3px solid var(--r);
+  border-radius:var(--rad);
+  padding:18px 36px;
+  font-family:var(--font-d);
+  font-size:38px;
+  color:#fff;
+  letter-spacing:4px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s,transform .2s;
+  z-index:500;
+  text-align:center;
+  backdrop-filter:blur(6px);
 }
+#toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
-.hud-skips {
-  display: flex;
-  gap: 4px;
+/* ── COMMENT BOX ── */
+#comment-box{
+  background:var(--s1);
+  border:1.5px solid var(--border);
+  border-left:4px solid var(--b);
+  border-radius:var(--rad-sm);
+  padding:10px 16px;
+  font-size:13px;
+  color:var(--m);
+  margin-bottom:14px;
+  line-height:1.5;
+  min-height:0;
+  opacity:0;
+  transition:opacity .4s;
 }
-.skip-pip {
-  width: 22px; height: 22px;
-  border: 2px solid var(--border);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
-  color: var(--muted);
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
-.skip-pip.available {
-  border-color: var(--green);
-  color: var(--green);
-}
-.skip-pip.available:hover { background: #33ff8822; }
+#comment-box.show{opacity:1}
 
-.question-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px 28px;
-  margin-bottom: 20px;
-  min-height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: background 0.3s;
+/* ── OVERLAYS ── */
+.overlay{
+  position:fixed;inset:0;z-index:300;
+  background:#000000e8;
+  display:none;
+  align-items:center;justify-content:center;flex-direction:column;
+  text-align:center;
+  padding:24px;
+  backdrop-filter:blur(12px);
 }
+.overlay.active{display:flex;animation:fadein .4s ease}
 
-#q-text {
-  font-family: var(--font-title);
-  font-size: clamp(22px, 4.5vw, 32px);
-  color: var(--text);
-  text-align: center;
-  letter-spacing: 2px;
-  line-height: 1.3;
+/* GAME OVER */
+#go-title{font-family:var(--font-d);font-size:clamp(60px,14vw,100px);color:var(--r);letter-spacing:6px;filter:drop-shadow(0 0 30px #ff224466);animation:shakeGO .6s ease}
+@keyframes shakeGO{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)scale(1.05)}75%{transform:rotate(4deg)scale(1.05)}}
+#go-q-num{font-family:var(--font-a);font-size:18px;color:var(--m);margin:10px 0 8px}
+#go-stats{display:flex;gap:20px;justify-content:center;margin:16px 0 28px}
+.stat-box{
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:var(--rad-sm);
+  padding:12px 24px;
+  font-family:var(--font-d);
 }
+.stat-label{font-size:13px;color:var(--m);letter-spacing:2px;display:block}
+.stat-val{font-size:32px;color:var(--w);display:block}
 
-.answers-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+/* WIN */
+#win-title{
+  font-family:var(--font-d);
+  font-size:clamp(56px,12vw,88px);
+  letter-spacing:6px;
+  line-height:1;
+  background:linear-gradient(135deg,var(--gold),var(--o),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px #ffd70055);
+  animation:logopulse 2s infinite;
+  margin-bottom:8px;
 }
-
-.ans-btn {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 12px;
-  font-family: var(--font-title);
-  font-size: clamp(16px, 3vw, 22px);
-  color: var(--text);
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), transform var(--transition);
-  min-height: 72px;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-  line-height: 1.2;
-  position: relative;
-  overflow: hidden;
-}
-.ans-btn::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: var(--orange);
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.ans-btn:hover { border-color: var(--orange); background: var(--orange-glow); transform: translateY(-2px); }
-.ans-btn:active { transform: scale(0.97); }
-.ans-btn.correct { border-color: var(--green); background: #33ff8822; animation: flash-correct 0.4s; }
-.ans-btn.wrong-flash { border-color: var(--red); background: #ff333322; animation: flash-wrong 0.4s; }
-
-@keyframes flash-correct { 0%,100%{} 50%{ background: #33ff8844; } }
-@keyframes flash-wrong { 0%,100%{} 25%,75%{ transform: translateX(-4px); } 50%{ transform: translateX(4px); } }
-
-/* ── WRONG TOAST ── */
-#toast-wrong {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  background: #ff333399;
-  border: 3px solid var(--red);
-  border-radius: var(--radius);
-  padding: 20px 40px;
-  font-family: var(--font-title);
-  font-size: 40px;
-  color: #fff;
-  letter-spacing: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-  backdrop-filter: blur(8px);
-  z-index: 100;
-  text-align: center;
-}
-#toast-wrong.show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+#win-sub{font-family:var(--font-a);font-size:16px;color:var(--m);margin-bottom:20px}
+#win-stats{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.win-rank{
+  font-family:var(--font-d);
+  font-size:20px;
+  letter-spacing:3px;
+  color:var(--gold);
+  border:2px solid var(--gold);
+  padding:8px 20px;
+  border-radius:var(--rad-sm);
+  margin-bottom:24px;
+  display:inline-block;
 }
 
-/* ── OVERLAY SCREENS ── */
-.overlay-screen {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.92);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  animation: fadeIn 0.5s ease;
+.btn-retry{
+  font-family:var(--font-d);
+  font-size:28px;
+  letter-spacing:4px;
+  color:#07070f;
+  background:linear-gradient(135deg,var(--o),var(--gold));
+  border:none;border-radius:var(--rad);
+  padding:12px 52px;
+  cursor:pointer;
+  transition:transform .2s,filter .2s;
 }
-.overlay-screen.active { display: flex; }
-
-#screen-gameover .go-title {
-  font-family: var(--font-title);
-  font-size: 80px;
-  color: var(--red);
-  letter-spacing: 6px;
-  filter: drop-shadow(0 0 20px #ff3333aa);
-  animation: shakeGO 0.6s ease;
-}
-#screen-gameover .go-sub {
-  font-size: 16px;
-  color: var(--muted);
-  margin: 12px 0 32px;
-}
-
-#screen-win .win-title {
-  font-family: var(--font-title);
-  font-size: 70px;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, var(--gold), var(--orange), var(--gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: pulse-logo 2s infinite;
-}
-#screen-win .win-sub {
-  font-size: 16px;
-  color: var(--muted);
-  margin: 16px 0 8px;
-}
-#screen-win .win-score {
-  font-family: var(--font-title);
-  font-size: 48px;
-  color: var(--gold);
-  margin-bottom: 32px;
-}
-
-.btn-retry {
-  font-family: var(--font-title);
-  font-size: 26px;
-  letter-spacing: 3px;
-  color: var(--bg);
-  background: var(--orange);
-  border: none;
-  border-radius: var(--radius);
-  padding: 12px 44px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px var(--orange-glow);
-}
-.btn-retry:hover { transform: scale(1.05); box-shadow: 0 6px 30px #ff6b1a66; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes shakeGO { 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-3deg) scale(1.05); } 75%{ transform: rotate(3deg) scale(1.05); } }
-
-/* ── SPECIAL QUESTION ELEMENTS ── */
-#special-zone {
-  position: relative;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-.hidden-btn {
-  position: absolute;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: transparent;
-  font-size: 1px;
-}
-
-.hidden-btn:hover { outline: none; }
-
-.circle-zone {
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  border: 3px solid var(--red);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-title);
-  font-size: 20px;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  margin: 0 auto;
-}
-.circle-zone:hover { border-color: var(--green); background: #33ff8822; }
-
-.word-cluster {
-  display: flex; flex-wrap: wrap; gap: 12px;
-  justify-content: center;
-  padding: 12px;
-}
-.wc-item {
-  padding: 10px 18px;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
-  font-family: var(--font-title);
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.15s;
-  background: var(--card);
-}
-.wc-item:hover { border-color: var(--orange); background: var(--orange-glow); transform: scale(1.04); }
-
-.mouse-avoid-zone {
-  position: relative;
-  height: 160px;
-  overflow: hidden;
-  border-radius: var(--radius);
-  background: var(--card);
-  border: 1px solid var(--border);
-  margin-bottom: 16px;
-}
-.mover {
-  position: absolute;
-  padding: 10px 24px;
-  border-radius: var(--radius);
-  border: 2px solid var(--orange);
-  font-family: var(--font-title);
-  font-size: 22px;
-  cursor: pointer;
-  background: var(--card);
-  transition: border-color 0.2s;
-  white-space: nowrap;
-}
-.mover:hover { border-color: var(--red); }
-
-.progress-bar {
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin-top: 12px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--orange), var(--gold));
-  border-radius: 2px;
-  transition: width 0.4s ease;
-}
+.btn-retry:hover{transform:scale(1.06);filter:brightness(1.1)}
+.btn-retry:active{transform:scale(.97)}
 </style>
 </head>
 <body>
 
-<div id="app">
+<canvas id="bg-canvas"></canvas>
 
-  <!-- TITLE SCREEN -->
-  <div id="screen-title">
-    <div class="logo-wrap">
-      <span class="logo-bg">THE</span>
-      <span class="logo-main">IMPOSSIBLEACH</span>
-      <span class="logo-sub">QUIZ</span>
+<div id="wrap">
+
+  <!-- TITLE -->
+  <div class="screen active" id="title-screen">
+    <div class="title-eyebrow">GOTEI 13 ENTERTAINMENT PRÉSENTE</div>
+    <div class="title-logo">
+      <span class="title-logo-main">IMPOSSIBLEACH</span>
+      <span class="title-logo-sub">Q U I Z</span>
     </div>
-    <p class="tagline">Prouve que tu connais Bleach... ou meurs d'embarras.</p>
-    <button class="btn-start" id="btn-start">COMMENCER</button>
-    <div class="title-deco">
-      <span><span class="deco-dot"></span>12 questions</span>
-      <span><span class="deco-dot blue"></span>3 vies</span>
-      <span><span class="deco-dot green"></span>5 skips</span>
+    <p class="title-tagline">20 questions. Aucune logique. <em>100% Bleach.</em></p>
+    <p class="title-tagline" style="font-size:13px;margin-top:4px">Si tu perds, c'est Aizen qui gagne. Tu veux vraiment ça ?</p>
+    <div class="title-badges">
+      <div class="badge"><div class="badge-dot" style="background:#ff6b00"></div>20 questions</div>
+      <div class="badge"><div class="badge-dot" style="background:#ff2244"></div>3 vies</div>
+      <div class="badge"><div class="badge-dot" style="background:#00e87a"></div>5 skips</div>
+      <div class="badge"><div class="badge-dot" style="background:#3a9eff"></div>Mécaniques variées</div>
     </div>
+    <button class="btn-start" id="btn-start">BANKAI !</button>
+    <div class="title-divider"></div>
+    <div class="title-credits">INSPIRÉ DE THE IMPOSSIBLE QUIZ · VERSION BLEACH</div>
   </div>
 
-  <!-- GAME SCREEN -->
-  <div id="screen-game">
+  <!-- GAME -->
+  <div class="screen" id="game-screen">
     <div class="hud">
       <div class="hud-lives" id="hud-lives"></div>
-      <div class="hud-q" id="hud-q">Q.1</div>
-      <div class="hud-skips" id="hud-skips"></div>
+      <div class="hud-progress"><div class="hud-progress-fill" id="hud-prog" style="width:0%"></div></div>
+      <div class="hud-right">
+        <div class="hud-qnum" id="hud-qnum">Q.1</div>
+        <div class="hud-skips" id="hud-skips"></div>
+      </div>
     </div>
 
-    <div class="question-box">
+    <div class="q-card">
       <div id="q-text">...</div>
     </div>
 
-    <div id="special-zone" style="display:none"></div>
-
-    <div class="answers-grid" id="answers-grid"></div>
-
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    </div>
+    <div id="comment-box"></div>
+    <div id="special-area"></div>
+    <div class="answers" id="answers"></div>
   </div>
 
 </div>
 
-<!-- TOAST WRONG -->
-<div id="toast-wrong">❌ FAUX ! -1 VIE</div>
+<!-- TOAST -->
+<div id="toast">❌ FAUX !<br><span style="font-size:22px">-1 VIE</span></div>
 
 <!-- GAME OVER -->
-<div id="screen-gameover" class="overlay-screen">
-  <div class="go-title">GAME<br>OVER</div>
-  <p class="go-sub" id="go-sub">Tu t'es arrêté à la question <span id="go-q">?</span></p>
+<div class="overlay" id="overlay-go">
+  <div id="go-title">GAME OVER</div>
+  <div id="go-q-num"></div>
+  <div id="go-stats"></div>
   <button class="btn-retry" id="btn-retry-go">RÉESSAYER</button>
 </div>
 
 <!-- WIN -->
-<div id="screen-win" class="overlay-screen">
-  <div class="win-title">VICTOIRE !</div>
-  <p class="win-sub">Ichigo serait fier de toi.</p>
-  <div class="win-score" id="win-score">Score : 0</div>
+<div class="overlay" id="overlay-win">
+  <div id="win-title">BANKAI !</div>
+  <div id="win-sub">Tu as survécu. Même Aizen est impressionné.</div>
+  <div id="win-stats"></div>
+  <div class="win-rank" id="win-rank"></div>
   <button class="btn-retry" id="btn-retry-win">REJOUER</button>
 </div>
 
 <script>
-(function() {
+(()=>{
 'use strict';
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════
+   BACKGROUND CANVAS (lignes reiatsu)
+═══════════════════════════════ */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resizeCanvas(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;initParticles()}
+function initParticles(){
+  particles=[];
+  const n=Math.floor(W*H/18000);
+  for(let i=0;i<n;i++) particles.push({
+    x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+    r:Math.random()*1.5+.3,
+    c:Math.random()<.6?'#ff6b0018':'#3a9eff14',
+    l:Math.random()*60+20
+  });
+}
+function drawBG(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.c;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawBG);
+}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();drawBG();
+
+/* ═══════════════════════════════
    STATE
-───────────────────────────────────────── */
-let lives = 3;
-let skipsLeft = 5;
-let level = 0;
-let score = 0;
-let blockInput = false;
-let cantTouchBlue = false;
-let mouseAvoidInterval = null;
+═══════════════════════════════ */
+let lives=3,skips=5,qIdx=0,score=0,blocked=false,wrongCount=0,avoidInterval=null;
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════
    QUESTIONS
-   type: 'normal' | 'click-word' | 'hidden' | 'mouse-avoid' | 'drag-rank' | 'color' | 'backwards' | 'image-pick'
-───────────────────────────────────────── */
-const questions = [
+═══════════════════════════════ */
+const Qs=[
 
-  /* 1 */
-  {
-    text: "COMBIEN DE FOIS ICHIGO MEURT ET REVIT DANS BLEACH ?",
-    answers: ["ZÉRO, IL EST IMMORTEL", "TROP DE FOIS POUR COMPTER", "EXACTEMENT 3 FOIS", "DEMANDE À KUBO"],
-    correct: 3,
-    comment: "Kubo lui-même a perdu le compte."
-  },
+/* 1 */ {
+  text:"COMBIEN DE TROUS DANS UN POLO ?",
+  ans:["1","2","3","4"],
+  ok:2,
+  comment:"3 trous : le col et les deux manches. Le polo Bleach en a 4 si Grimmjow l'a déchiré."
+},
 
-  /* 2 */
-  {
-    text: "QUEL EST LE NOM DU ZANPAKUTO D'ICHIGO ?",
-    answers: ["ZANGETSU", "TENSA ZANGETSU", "BENIHIME", "SODE NO SHIRAYUKI"],
-    correct: 0,
-    comment: "Zangetsu — ou le vieux gentleman aux lunettes noires."
-  },
+/* 2 */ {
+  text:"EST-CE QU'UN BANKAI PEUT SE VOLER ?",
+  ans:["NON JAMAIS","OUI, LES STERNRITTER LE FONT","SEULEMENT AIZEN","ICHIGO L'A FAIT"],
+  ok:1,
+  comment:"Les Sternritter utilisent le Medallion pour voler les Bankai. Ichigo ne pouvait pas se le faire voler... parce que son Bankai est trop bizarre."
+},
 
-  /* 3 — BACKWARDS */
-  {
-    text: "RÉPONDS À REBOURS : ASNAB AJ ED MAN EL TSEUQ",
-    answers: ["AYASEGAWA", "SASAKIBE", "OETSU NIMAIYA", "JUSHIRO UKITAKE"],
-    correct: 2,
-    type: "backwards",
-    comment: "C'est 'QUEL EST LE NOM DE JA BANXA' à l'envers. Nimaiya forge les Asauchi."
-  },
+/* 3 — BACKWARDS */ {
+  text:"RÉPONSE : NOISNEP NE TNANGILAM TNEMELLEUTCA TNEMESICÉRP IUQELEC",
+  ans:["AIZEN","YHWACH","GINJO","URAHARA"],
+  ok:0,
+  type:"backwards",
+  comment:"Lu à l'envers : 'CELUI QUI EST PRÉCISÉMENT ACTUELLEMENT MALIGNANT EN PENSION'. Aizen, en prison dorée au Muken."
+},
 
-  /* 4 — CLICK LE MOT CACHÉ */
-  {
-    text: 'CLIQUE SUR <span id="secret-word" style="cursor:pointer;color:transparent;font-family:Bangers,cursive;font-size:inherit;letter-spacing:inherit;transition:color 0.3s">LA RÉPONSE</span>',
-    answers: ["HORS SERVICE", "HORS SERVICE", "HORS SERVICE", "HORS SERVICE"],
-    correct: -1,
-    type: "click-word",
-    comment: "Tu devais cliquer sur 'LA RÉPONSE' dans la question elle-même."
-  },
+/* 4 — CLICK LE MOT */ {
+  text:'CLIQUE UNIQUEMENT SUR <span class="highlight" data-correct="1">LE BON ENDROIT</span> POUR PASSER',
+  ans:["BOUTON A","BOUTON B","BOUTON C","BOUTON D"],
+  ok:-1,
+  type:"click-word",
+  comment:"Il fallait cliquer sur 'LE BON ENDROIT' dans la question elle-même."
+},
 
-  /* 5 */
-  {
-    text: "COMBIEN Y A-T-IL DE DIVISIONS DANS LA GOTEI 13 ?",
-    answers: ["10", "12", "13", "15"],
-    correct: 2,
-    comment: "13. C'est dans le nom, champion."
-  },
+/* 5 */ {
+  text:"COMBIEN DE DIVISIONS DANS LA GOTEI 13 ?",
+  ans:["10","11","13","15"],
+  ok:2,
+  comment:"13. C'est littéralement dans le nom. GOTEI *13*. T-R-E-I-Z-E."
+},
 
-  /* 6 — VRAIE LOGIQUE TROLL */
-  {
-    text: "√HOLLOW = ?",
-    answers: ["28", "VASTO LORDE", "ARRANCAR", "π"],
-    correct: 1,
-    comment: "La racine carrée d'un Hollow ? Un être à moitié-Hollow, soit un Vasto Lorde (ou Arrancar). On attendait VASTO LORDE."
-  },
+/* 6 — TROLL LOGIQUE */ {
+  text:"√HOLLOW = ?",
+  ans:["28","MENO","VASTO LORDE","π"],
+  ok:2,
+  comment:"La racine d'un Hollow ? Un être à moitié déchiqueté, donc : Vasto Lorde. Question totalement rationnelle."
+},
 
-  /* 7 */
-  {
-    text: "QUELLE EST LA COULEUR DU REIATSU D'ICHIGO EN SHIKAI ?",
-    answers: ["ROUGE", "BLEU", "ORANGE", "VIOLET"],
-    correct: 2,
-    comment: "Orange, comme ses cheveux signature."
-  },
+/* 7 — MÉMOIRE */ {
+  text:"QUELLE ÉTAIT LA RÉPONSE À LA QUESTION 1 ?",
+  ans:["1","2","3 ← CELLE-LÀ","4"],
+  ok:2,
+  comment:"3 trous dans un polo. Question 1. Mémoire de poisson rouge détectée."
+},
 
-  /* 8 — TROUVE LE BOUTON CACHÉ */
-  {
-    text: "CHERCHE LA SORTIE !",
-    answers: [],
-    correct: -1,
-    type: "hidden",
-    comment: "Il fallait trouver le vrai bouton parmi les faux."
-  },
+/* 8 — SLIDER */ {
+  text:"COMBIEN DE FOIS ICHIGO PERD-IL SES POUVOIRS AU COURS DE BLEACH ?",
+  ans:[],
+  ok:-1,
+  type:"slider",
+  sliderMin:0,sliderMax:10,sliderCorrect:3,
+  comment:"3 fois : après le combat contre Byakuya, après le combat final contre Aizen, et après le combat contre Ginjo."
+},
 
-  /* 9 — MÉMOIRE */
-  {
-    text: "QUELLE ÉTAIT LA RÉPONSE À LA QUESTION 2 ?",
-    answers: ["CELUI-LÀ →", "CELUI-LÀ ↙", "CELUI-LÀ ↑", "ZANGETSU"],
-    correct: 3,
-    comment: "Zangetsu. Question 2. Tu devais t'en souvenir."
-  },
+/* 9 — HIDDEN */ {
+  text:"TROUVE LA SORTIE CACHÉE !",
+  ans:[],
+  ok:-1,
+  type:"hidden",
+  comment:"Le checkmark ✓ vert était la vraie réponse. Les autres n'étaient que des pièges."
+},
 
-  /* 10 */
-  {
-    text: "QUI A CRÉÉ LES BANKAI DE TOUS LES SHINIGAMI ?",
-    answers: ["YHWACH", "ICHIBE HYOSUBE", "OETSU NIMAIYA", "ROYAL KEY"],
-    correct: 2,
-    comment: "Oetsu Nimaiya, le 5ème membre de la Garde Royale, forge les Asauchi."
-  },
+/* 10 — COULEURS */ {
+  text:"QUELLE EST LA COULEUR DU REIATSU DE BYAKUYA ?",
+  ans:[],
+  ok:-1,
+  type:"colors",
+  colorOk:"#e8a0ff",
+  colors:["#ff6622","#3a9eff","#e8a0ff","#00e87a","#ffd700","#ff2244"],
+  colorLabels:["ORANGE","BLEU","VIOLET","VERT","OR","ROUGE"],
+  comment:"Violet (mauve). Ses pétales de Senbonzakura brillent dans cette teinte."
+},
 
-  /* 11 — TROLL ULTIME */
-  {
-    text: "LEQUEL EST COMESTIBLE ?",
-    answers: [],
-    correct: -1,
-    type: "food-pick",
-    comment: "C'était le Senbonzakura — sakura = fleurs de cerisier = décoration de gâteau."
-  },
+/* 11 */ {
+  text:"QUI EST LE CAPITAINE DE LA 12ÈME DIVISION ?",
+  ans:["KISUKE URAHARA","MAYURI KUROTSUCHI","SZAYELAPORRO","NEMU KUROTSUCHI"],
+  ok:1,
+  comment:"Mayuri Kurotsuchi. Le scientifique le plus inquiétant de toute la Soul Society — et c'est dire."
+},
 
-  /* 12 — FINALE */
-  {
-    text: "QUE DIT ICHIGO AVANT PRESQUE CHAQUE COMBAT ?",
-    answers: ["'JE VAIS TE TUER'", "'JE PROTÈGERAI TOUT LE MONDE'", "'BANKAI !'", "'GETSUGA TENSHO !'"],
-    correct: 1,
-    comment: "Son arc narratif entier. Protéger ceux à qui il tient."
-  }
+/* 12 — ORDRE */ {
+  text:"REMETS CES ARCS DANS L'ORDRE CHRONOLOGIQUE",
+  ans:[],
+  ok:-1,
+  type:"drag",
+  items:["SOUL SOCIETY","ARRANCAR","FULLBRING","GUERRE DES MILLE ANS"],
+  correctOrder:[0,1,2,3],
+  comment:"L'ordre est : Soul Society → Arrancar → Fullbring → Guerre des Mille Ans. Simple si tu as tout regardé."
+},
+
+/* 13 — CLICK PAS OBVIOUS */ {
+  text:"NE CLIQUE PAS SUR LA BONNE RÉPONSE",
+  ans:["MAUVAIS","MAUVAIS","BANKAI","MAUVAIS"],
+  ok:2,
+  type:"reverse",
+  comment:"'Ne clique pas sur la bonne réponse' — donc il fallait cliquer dessus. BANKAI."
+},
+
+/* 14 */ {
+  text:"QUEL EST LE VRAI NOM D'URAHARA KISUKE ?",
+  ans:["MR CHAPEAU","URAHARA KISUKE","YORUICHI","MR BONBON"],
+  ok:1,
+  comment:"Urahara Kisuke. Il vend des bonbons mais il s'appelle bien Urahara. (Mr Bonbon est son surnom chez les Hollows.)"
+},
+
+/* 15 — MOUSE AVOID */ {
+  text:"ATTRAPE LE BOUTON... MAIS ÉVITE LES PIÈGES !",
+  ans:[],
+  ok:-1,
+  type:"mouse-avoid",
+  comment:"Il fallait cliquer sur le bouton vert sans toucher les rouges. Comme un shinigami qui esquive."
+},
+
+/* 16 */ {
+  text:"QUE SIGNIFIE 'GETSUGA TENSHO' ?",
+  ans:["LUNE TRANCHANTE","RUGISSEMENT DE LA LUNE DÉVORANTE","CIEL FENDANT","VAGUE LUNAIRE"],
+  ok:1,
+  comment:"Getsuga Tensho = 月牙天衝 = 'Rugissement de la Lune Dévorante / Ciel Percé par la Lune'. Pas juste 'lune tranchante'."
+},
+
+/* 17 */ {
+  text:"CLIQUE SUR LA QUESTION 17.",
+  ans:["Q.17","Q.1","Q.13","Q.0"],
+  ok:0,
+  comment:"C'était la question 17 et tu devais cliquer sur Q.17. Littéralement la réponse la plus évidente possible."
+},
+
+/* 18 — TROLL ABSOLU */ {
+  text:"LEQUEL DE CES PERSONNAGES N'EST PAS MORT (DÉFINITIVEMENT) DANS BLEACH ?",
+  ans:["UKITAKE","UNOHANA","YAMAMOTO","TOUS SONT MORTS"],
+  ok:3,
+  comment:"Techniquement ils meurent tous. Mais dans Bleach, 'définitivement' est un concept flou. Yamamoto le plus clairement, mais Unohana aussi, et Ukitake aussi. Donc : tous."
+},
+
+/* 19 */ {
+  text:"COMBIEN D'YEUX A NNOITRA GILGA ?",
+  ans:["1","2","4","6"],
+  ok:2,
+  comment:"Nnoitra a 4 yeux. Deux yeux normaux + deux yeux sur son casque. Charmant bonhomme."
+},
+
+/* 20 — FINALE */ {
+  text:"QUE DIT ICHIGO DANS PRESQUE TOUS SES COMBATS ?",
+  ans:["'JE VAIS TE TUER'","'BANKAI!'","'JE PROTÈGERAI CEUX QUI ME SONT CHERS'","'GETSUGA TENSHO !'"],
+  ok:2,
+  comment:"Son arc narratif entier, résumé en une phrase. Protéger ceux à qui il tient — même au prix de tout."
+}
+
 ];
 
-/* ─────────────────────────────────────────
-   HELPERS
-───────────────────────────────────────── */
-const $ = id => document.getElementById(id);
-const qs = sel => document.querySelector(sel);
-const qsa = sel => document.querySelectorAll(sel);
-
-function showToast(msg, color) {
-  const t = $('toast-wrong');
-  t.textContent = msg || '❌ FAUX ! -1 VIE';
-  if (color) t.style.background = color + '99';
+/* ═══════════════════════════════
+   UTILS
+═══════════════════════════════ */
+const $=id=>document.getElementById(id);
+function showToast(msg){
+  const t=$('toast');
+  if(msg)t.innerHTML=msg;
+  else t.innerHTML='❌ FAUX !<br><span style="font-size:22px">-1 VIE</span>';
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 1200);
+  setTimeout(()=>t.classList.remove('show'),1300);
+}
+function setComment(txt,show){
+  const box=$('comment-box');
+  box.textContent=txt;
+  box.classList.toggle('show',!!show);
 }
 
-function loseLife(btnEl) {
-  if (lives <= 0) return;
-  lives--;
-  if (btnEl) btnEl.classList.add('wrong-flash');
+function loseLife(el){
+  if(lives<=0)return;
+  lives--;wrongCount++;
+  if(el)el.classList.add('wrong');
   renderHUD();
   showToast();
-  if (lives <= 0) {
-    setTimeout(showGameOver, 900);
-  }
+  if(lives<=0){setTimeout(showGameOver,1000);return}
 }
 
-function renderHUD() {
-  const hudLives = $('hud-lives');
-  hudLives.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
-    const d = document.createElement('div');
-    d.className = 'life-icon' + (i >= lives ? ' lost' : '');
-    d.innerHTML = `<svg viewBox="0 0 24 24" fill="${i < lives ? '#ff6b1a' : '#444'}">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+function correct(el){
+  blocked=true;
+  if(el)el.classList.add('correct');
+  score+=10;
+  const q=Qs[qIdx];
+  if(q.comment){setComment(q.comment,true);setTimeout(()=>{setComment('',false);advanceQ()},1800)}
+  else setTimeout(advanceQ,500);
+}
+
+function advanceQ(){
+  qIdx++;
+  blocked=false;
+  if(qIdx>=Qs.length){showWin();return}
+  renderQ();
+}
+
+function renderHUD(){
+  const hl=$('hud-lives');
+  hl.innerHTML='';
+  for(let i=0;i<3;i++){
+    const d=document.createElement('div');
+    d.className='hud-heart'+(i>=lives?' dead':'');
+    d.innerHTML=`<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${i<lives?'#ff6b00':'#2c2c48'}"/>
     </svg>`;
-    hudLives.appendChild(d);
+    hl.appendChild(d);
   }
-
-  const hudSkips = $('hud-skips');
-  hudSkips.innerHTML = '';
-  for (let i = 0; i < 5; i++) {
-    const d = document.createElement('div');
-    d.className = 'skip-pip' + (i < skipsLeft ? ' available' : '');
-    d.textContent = '▶';
-    if (i < skipsLeft) {
-      d.addEventListener('click', useSkip);
-    }
-    hudSkips.appendChild(d);
+  $('hud-prog').style.width=(qIdx/Qs.length*100)+'%';
+  $('hud-qnum').textContent='Q.'+(qIdx+1);
+  const hs=$('hud-skips');
+  hs.innerHTML='';
+  for(let i=0;i<5;i++){
+    const d=document.createElement('div');
+    d.className='hud-skip-pip'+(i<skips?' on':'');
+    d.textContent='▶';
+    if(i<skips)d.addEventListener('click',doSkip);
+    hs.appendChild(d);
   }
-
-  $('hud-q').textContent = `Q.${level + 1}`;
-  $('progress-fill').style.width = (level / questions.length * 100) + '%';
+}
+function doSkip(){
+  if(skips<=0||blocked)return;
+  skips--;score=Math.max(0,score-5);
+  advanceQ();
 }
 
-function useSkip() {
-  if (skipsLeft <= 0 || blockInput) return;
-  skipsLeft--;
-  score = Math.max(0, score - 5);
-  nextQuestion();
-}
-
-function nextQuestion() {
-  level++;
-  blockInput = false;
-  renderQuestion();
-}
-
-function showGameOver() {
-  $('screen-gameover').classList.add('active');
-  $('go-q').textContent = level + 1;
-}
-
-function showWin() {
-  $('screen-win').classList.add('active');
-  $('win-score').textContent = `Score : ${score}`;
-}
-
-function restart() {
-  lives = 3;
-  skipsLeft = 5;
-  level = 0;
-  score = 0;
-  blockInput = false;
-  cantTouchBlue = false;
-  clearInterval(mouseAvoidInterval);
-  $('screen-gameover').classList.remove('active');
-  $('screen-win').classList.remove('active');
-  renderQuestion();
-}
-
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════
    RENDER QUESTION
-───────────────────────────────────────── */
-function renderQuestion() {
-  if (level >= questions.length) { showWin(); return; }
-
-  const q = questions[level];
+═══════════════════════════════ */
+function renderQ(){
+  clearInterval(avoidInterval);
+  const q=Qs[qIdx];
+  setComment('',false);
+  $('q-text').innerHTML=q.text;
+  $('q-text').style.transform='';
+  const sa=$('special-area');
+  const ag=$('answers');
+  sa.innerHTML='';ag.innerHTML='';
+  sa.style.display='none';
+  ag.style.display='grid';
   renderHUD();
 
-  $('q-text').innerHTML = q.text;
-  $('q-text').style.transform = '';
-
-  const special = $('special-zone');
-  const grid = $('answers-grid');
-  special.style.display = 'none';
-  special.innerHTML = '';
-  grid.style.display = 'grid';
-  grid.innerHTML = '';
-
-  switch (q.type) {
-
-    case 'click-word':
-      renderNormalAnswers(q, true);
-      setupClickWord();
-      break;
-
-    case 'backwards':
-      $('q-text').style.transform = 'scaleX(-1)';
-      renderNormalAnswers(q);
-      break;
-
-    case 'hidden':
-      renderHiddenSearch();
-      break;
-
-    case 'food-pick':
-      renderFoodPick();
-      break;
-
-    default:
-      renderNormalAnswers(q);
+  switch(q.type){
+    case'backwards': $('q-text').style.transform='scaleX(-1)';renderNormal(q);break;
+    case'click-word': renderNormal(q,true);setupClickWord();break;
+    case'reverse': renderReverse(q);break;
+    case'slider': renderSlider(q);break;
+    case'hidden': renderHidden();break;
+    case'colors': renderColors(q);break;
+    case'drag': renderDrag(q);break;
+    case'mouse-avoid': renderAvoid();break;
+    default: renderNormal(q);
   }
 }
 
-/* ─────────────────────────────────────────
-   NORMAL ANSWERS
-───────────────────────────────────────── */
-function renderNormalAnswers(q, disableAll) {
-  const grid = $('answers-grid');
-  q.answers.forEach((ans, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'ans-btn';
-    btn.innerHTML = ans;
-    if (disableAll) {
-      btn.addEventListener('click', () => loseLife(btn));
-    } else {
-      btn.addEventListener('click', () => {
-        if (blockInput) return;
-        if (i === q.correct) {
-          blockInput = true;
-          btn.classList.add('correct');
-          score += 10;
-          setTimeout(nextQuestion, 600);
-        } else {
-          loseLife(btn);
-        }
-      });
-    }
-    grid.appendChild(btn);
-  });
-}
-
-/* ─────────────────────────────────────────
-   CLICK-WORD (Q4)
-───────────────────────────────────────── */
-function setupClickWord() {
-  const sw = $('secret-word');
-  if (!sw) return;
-  sw.addEventListener('mouseenter', () => { sw.style.color = 'var(--orange)'; });
-  sw.addEventListener('mouseleave', () => { sw.style.color = 'transparent'; });
-  sw.addEventListener('click', (e) => {
-    if (blockInput) return;
-    blockInput = true;
-    e.stopPropagation();
-    sw.style.color = 'var(--green)';
-    score += 10;
-    setTimeout(nextQuestion, 600);
-  });
-}
-
-/* ─────────────────────────────────────────
-   HIDDEN SEARCH (Q8)
-───────────────────────────────────────── */
-function renderHiddenSearch() {
-  const grid = $('answers-grid');
-  grid.style.display = 'none';
-  const special = $('special-zone');
-  special.style.display = 'block';
-
-  const zone = document.createElement('div');
-  zone.style.cssText = 'position:relative;width:100%;height:200px;background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;';
-
-  const decoys = [
-    { label: 'Nope', x: 20, y: 30 },
-    { label: 'Non', x: 65, y: 55 },
-    { label: 'Cherche encore', x: 30, y: 72 },
-    { label: ':(', x: 75, y: 15 },
-    { label: 'X', x: 10, y: 62 },
-    { label: 'Pas là', x: 50, y: 80 },
-  ];
-
-  decoys.forEach(d => {
-    const el = document.createElement('div');
-    el.style.cssText = `position:absolute;left:${d.x}%;top:${d.y}%;color:transparent;font-family:Bangers,cursive;font-size:20px;cursor:pointer;padding:6px 10px;transition:color 0.2s;`;
-    el.textContent = d.label;
-    el.addEventListener('mouseenter', () => { el.style.color = 'var(--red)'; });
-    el.addEventListener('mouseleave', () => { el.style.color = 'transparent'; });
-    el.addEventListener('click', () => { if (blockInput) return; loseLife(); });
-    zone.appendChild(el);
-  });
-
-  const correct = document.createElement('div');
-  correct.style.cssText = 'position:absolute;left:48%;top:43%;color:transparent;font-size:28px;cursor:pointer;padding:8px 12px;transition:color 0.2s;';
-  correct.textContent = '✓';
-  correct.addEventListener('mouseenter', () => { correct.style.color = 'var(--green)'; });
-  correct.addEventListener('mouseleave', () => { correct.style.color = 'transparent'; });
-  correct.addEventListener('click', () => {
-    if (blockInput) return;
-    blockInput = true;
-    correct.style.color = 'var(--green)';
-    score += 10;
-    setTimeout(nextQuestion, 500);
-  });
-  zone.appendChild(correct);
-  special.appendChild(zone);
-}
-
-/* ─────────────────────────────────────────
-   FOOD PICK (Q11)
-───────────────────────────────────────── */
-function renderFoodPick() {
-  const grid = $('answers-grid');
-  grid.style.display = 'none';
-  const special = $('special-zone');
-  special.style.display = 'block';
-
-  const items = [
-    { label: '⚡ GETSUGA TENSHO', correct: false },
-    { label: '🌸 SENBONZAKURA', correct: true },
-    { label: '👁 SHARINGAN', correct: false },
-    { label: '🔰 QUINCY CROSS', correct: false },
-    { label: '🗡 TENSA ZANGETSU', correct: false },
-  ];
-
-  const wrap = document.createElement('div');
-  wrap.className = 'word-cluster';
-
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'wc-item';
-    el.textContent = item.label;
-    el.addEventListener('click', () => {
-      if (blockInput) return;
-      if (item.correct) {
-        blockInput = true;
-        el.style.borderColor = 'var(--green)';
-        el.style.background = '#33ff8822';
-        score += 10;
-        setTimeout(nextQuestion, 600);
-      } else {
-        loseLife();
-      }
+function renderNormal(q,disableAll){
+  const ag=$('answers');
+  q.ans.forEach((a,i)=>{
+    const b=document.createElement('button');
+    b.className='ans';
+    b.innerHTML=`<span>${a}</span>`;
+    b.addEventListener('click',()=>{
+      if(blocked)return;
+      if(disableAll){loseLife(b);return}
+      if(i===q.ok)correct(b);
+      else loseLife(b);
     });
-    wrap.appendChild(el);
+    ag.appendChild(b);
   });
-
-  special.appendChild(wrap);
 }
 
-/* ─────────────────────────────────────────
+function renderReverse(q){
+  const ag=$('answers');
+  q.ans.forEach((a,i)=>{
+    const b=document.createElement('button');
+    b.className='ans';
+    b.innerHTML=`<span>${a}</span>`;
+    b.addEventListener('click',()=>{
+      if(blocked)return;
+      // reverse: cliquer sur la bonne réponse = perd, ne pas cliquer = impossible
+      // Ici on veut que i===q.ok soit LA bonne à cliquer malgré la formulation
+      if(i===q.ok)correct(b);
+      else loseLife(b);
+    });
+    ag.appendChild(b);
+  });
+}
+
+function setupClickWord(){
+  const hw=document.querySelector('#q-text .highlight');
+  if(!hw)return;
+  hw.addEventListener('click',e=>{
+    if(blocked)return;
+    e.stopPropagation();
+    blocked=true;
+    hw.style.color='var(--g)';
+    score+=10;
+    const q=Qs[qIdx];
+    if(q.comment){setComment(q.comment,true);setTimeout(()=>{setComment('',false);advanceQ()},1800)}
+    else setTimeout(advanceQ,500);
+  });
+}
+
+function renderSlider(q){
+  $('answers').style.display='none';
+  const sa=$('special-area');sa.style.display='block';
+  sa.innerHTML=`<div class="slider-wrap">
+    <div class="slider-val" id="sl-val">${q.sliderCorrect}</div>
+    <input type="range" class="slider-ctrl" id="sl-ctrl" min="${q.sliderMin}" max="${q.sliderMax}" step="1" value="${q.sliderCorrect}">
+    <button class="slider-submit" id="sl-sub">VALIDER</button>
+  </div>`;
+  const ctrl=$('sl-ctrl');const val=$('sl-val');
+  ctrl.addEventListener('input',()=>{val.textContent=ctrl.value});
+  $('sl-sub').addEventListener('click',()=>{
+    if(blocked)return;
+    if(parseInt(ctrl.value)===q.sliderCorrect)correct($('sl-sub'));
+    else loseLife($('sl-sub'));
+  });
+}
+
+function renderHidden(){
+  $('answers').style.display='none';
+  const sa=$('special-area');sa.style.display='block';
+  const field=document.createElement('div');field.className='search-field';
+  const decoys=[
+    {t:'NOPE',x:8,y:12},{t:'NON',x:55,y:58},{t:'CHERCHE',x:20,y:72},
+    {t:':(', x:72,y:18},{t:'X',x:5,y:55},{t:'PAS LÀ',x:60,y:78},
+    {t:'...',x:35,y:35},{t:'ESSAIE',x:78,y:50}
+  ];
+  decoys.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='decoy-el';
+    el.style.left=d.x+'%';el.style.top=d.y+'%';
+    el.textContent=d.t;
+    el.addEventListener('click',()=>{if(blocked)return;loseLife()});
+    field.appendChild(el);
+  });
+  const ok=document.createElement('div');
+  ok.className='correct-el';ok.textContent='✓';
+  ok.style.left='46%';ok.style.top='40%';
+  ok.addEventListener('click',()=>{if(blocked)return;correct(ok)});
+  field.appendChild(ok);
+  sa.appendChild(field);
+}
+
+function renderColors(q){
+  $('answers').style.display='none';
+  const sa=$('special-area');sa.style.display='block';
+  const grid=document.createElement('div');grid.className='color-grid';
+  q.colors.forEach((c,i)=>{
+    const sw=document.createElement('div');
+    sw.className='color-swatch';
+    sw.style.background=c;
+    sw.textContent=q.colorLabels[i];
+    sw.addEventListener('click',()=>{
+      if(blocked)return;
+      if(c===q.colorOk)correct(sw);
+      else loseLife(sw);
+    });
+    grid.appendChild(sw);
+  });
+  sa.appendChild(grid);
+}
+
+function renderDrag(q){
+  $('answers').style.display='none';
+  const sa=$('special-area');sa.style.display='block';
+  let order=[...q.items];
+  const list=document.createElement('div');list.className='drag-list';
+  let dragSrc=null;
+
+  function rebuildList(){
+    list.innerHTML='';
+    order.forEach((item,i)=>{
+      const div=document.createElement('div');
+      div.className='drag-item';
+      div.draggable=true;
+      div.dataset.i=i;
+      div.innerHTML=`<span class="drag-handle">⠿</span><span>${item}</span>`;
+      div.addEventListener('dragstart',e=>{dragSrc=i;div.classList.add('dragging')});
+      div.addEventListener('dragend',()=>div.classList.remove('dragging'));
+      div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('drag-over')});
+      div.addEventListener('dragleave',()=>div.classList.remove('drag-over'));
+      div.addEventListener('drop',e=>{
+        e.preventDefault();div.classList.remove('drag-over');
+        if(dragSrc===null||dragSrc===i)return;
+        const tmp=order[dragSrc];order[dragSrc]=order[i];order[i]=tmp;
+        rebuildList();
+      });
+      list.appendChild(div);
+    });
+  }
+  rebuildList();
+  const sub=document.createElement('button');sub.className='drag-submit';sub.textContent='VALIDER L\'ORDRE';
+  sub.addEventListener('click',()=>{
+    if(blocked)return;
+    const isOk=q.correctOrder.every((ci,pos)=>order[pos]===q.items[ci]);
+    if(isOk)correct(sub);else loseLife(sub);
+  });
+  sa.appendChild(list);sa.appendChild(sub);
+}
+
+function renderAvoid(){
+  $('answers').style.display='none';
+  const sa=$('special-area');sa.style.display='block';
+  const field=document.createElement('div');field.className='avoid-field';
+  const target=document.createElement('div');
+  target.className='avoid-target';
+  target.textContent='CLIQUE ICI';
+  target.style.left='10px';target.style.top='20px';
+  let tx=10,ty=20;
+  let moving=false;
+  target.addEventListener('mouseenter',()=>{
+    if(moving)return;moving=true;
+    avoidInterval=setInterval(()=>{
+      tx=Math.random()*(field.offsetWidth-140);
+      ty=Math.random()*(field.offsetHeight-50);
+      target.style.left=tx+'px';target.style.top=ty+'px';
+    },400);
+  });
+  target.addEventListener('click',()=>{
+    if(blocked)return;
+    clearInterval(avoidInterval);
+    correct(target);
+  });
+  const traps=[
+    {t:'TOUCHE PAS',l:'55%',tp:'10%'},
+    {t:'FAUX BOUTON',l:'45%',tp:'60%'},
+    {t:'PIÈGE',l:'5%',tp:'55%'},
+  ];
+  traps.forEach(trap=>{
+    const el=document.createElement('div');
+    el.className='avoid-trap';
+    el.style.left=trap.l;el.style.top=trap.tp;
+    el.textContent=trap.t;
+    el.addEventListener('click',()=>{if(blocked)return;loseLife()});
+    field.appendChild(el);
+  });
+  field.appendChild(target);
+  sa.appendChild(field);
+}
+
+/* ═══════════════════════════════
+   OVERLAYS
+═══════════════════════════════ */
+function showGameOver(){
+  clearInterval(avoidInterval);
+  $('go-q-num').textContent='Bloqué à la question '+(qIdx+1)+' / '+Qs.length;
+  $('go-stats').innerHTML=`
+    <div class="stat-box"><span class="stat-label">SCORE</span><span class="stat-val">${score}</span></div>
+    <div class="stat-box"><span class="stat-label">ERREURS</span><span class="stat-val">${wrongCount}</span></div>
+    <div class="stat-box"><span class="stat-label">QUESTION</span><span class="stat-val">${qIdx+1}</span></div>`;
+  $('overlay-go').classList.add('active');
+}
+function showWin(){
+  clearInterval(avoidInterval);
+  const rank=score>=180?'GRADE : CAPITAINE':score>=140?'GRADE : LIEUTENANT':score>=100?'GRADE : SEATED OFFICER':'GRADE : 5ÈME SEAT';
+  $('win-stats').innerHTML=`
+    <div class="stat-box"><span class="stat-label">SCORE FINAL</span><span class="stat-val">${score}</span></div>
+    <div class="stat-box"><span class="stat-label">ERREURS</span><span class="stat-val">${wrongCount}</span></div>
+    <div class="stat-box"><span class="stat-label">SKIPS RESTANTS</span><span class="stat-val">${skips}</span></div>`;
+  $('win-rank').textContent=rank;
+  $('overlay-win').classList.add('active');
+}
+
+function restart(){
+  lives=3;skips=5;qIdx=0;score=0;blocked=false;wrongCount=0;
+  clearInterval(avoidInterval);
+  $('overlay-go').classList.remove('active');
+  $('overlay-win').classList.remove('active');
+  setComment('',false);
+  renderQ();
+}
+
+/* ═══════════════════════════════
    INIT
-───────────────────────────────────────── */
-$('btn-start').addEventListener('click', () => {
-  $('screen-title').style.display = 'none';
-  $('screen-game').style.display = 'block';
-  renderQuestion();
+═══════════════════════════════ */
+$('btn-start').addEventListener('click',()=>{
+  $('title-screen').classList.remove('active');
+  $('game-screen').classList.add('active');
+  renderQ();
 });
-
-$('btn-retry-go').addEventListener('click', () => {
-  $('screen-title').style.display = 'none';
-  $('screen-game').style.display = 'block';
-  restart();
-});
-
-$('btn-retry-win').addEventListener('click', () => {
-  $('screen-title').style.display = 'none';
-  $('screen-game').style.display = 'block';
-  restart();
-});
+$('btn-retry-go').addEventListener('click',restart);
+$('btn-retry-win').addEventListener('click',restart);
 
 })();
 </script>
