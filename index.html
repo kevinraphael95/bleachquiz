@@ -1,38 +1,915 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-	<meta charset="utf-8">
-	<title>The ImpossiBLEACH Quiz</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-	<link rel='stylesheet' type='text/css' href='stylesheet.css'/>
-    <script type='text/javascript' src='script.js'></script>
-	<link href="https://fonts.googleapis.com/css?family=Patrick+Hand+SC" rel="stylesheet">
-	
+<meta charset="utf-8">
+<title>The ImpossiBLEACH Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --card: #1a1a26;
+  --border: #2a2a40;
+  --orange: #ff6b1a;
+  --orange-glow: #ff6b1a44;
+  --blue: #4da6ff;
+  --blue-glow: #4da6ff33;
+  --red: #ff3333;
+  --green: #33ff88;
+  --gold: #ffd700;
+  --text: #f0f0ff;
+  --muted: #8888aa;
+  --font-title: 'Bangers', cursive;
+  --font-body: 'Nunito', sans-serif;
+  --radius: 12px;
+  --transition: 0.18s ease;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow: hidden;
+  user-select: none;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, #ff6b1a11 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 100%, #4da6ff0a 0%, transparent 50%);
+}
+
+#app {
+  width: 640px;
+  max-width: 100vw;
+  padding: 0 16px;
+}
+
+/* ── TITLE SCREEN ── */
+#screen-title {
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+
+.logo-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.logo-bg {
+  font-family: var(--font-title);
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: block;
+}
+
+.logo-main {
+  font-family: var(--font-title);
+  font-size: clamp(52px, 10vw, 80px);
+  letter-spacing: 6px;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--gold) 50%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  text-shadow: none;
+  filter: drop-shadow(0 0 20px var(--orange-glow));
+  animation: pulse-logo 3s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+  0%, 100% { filter: drop-shadow(0 0 20px var(--orange-glow)); }
+  50% { filter: drop-shadow(0 0 40px #ff6b1a88); }
+}
+
+.logo-sub {
+  font-family: var(--font-title);
+  font-size: 22px;
+  letter-spacing: 8px;
+  color: var(--blue);
+  display: block;
+  margin-top: 4px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 20px 0 32px;
+  letter-spacing: 1px;
+}
+
+.btn-start {
+  font-family: var(--font-title);
+  font-size: 32px;
+  letter-spacing: 4px;
+  color: var(--bg);
+  background: linear-gradient(135deg, var(--orange), var(--gold));
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 56px;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+  box-shadow: 0 4px 24px var(--orange-glow);
+}
+.btn-start:hover { transform: scale(1.06) translateY(-2px); box-shadow: 0 8px 40px #ff6b1a66; }
+.btn-start:active { transform: scale(0.97); }
+
+.title-deco {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 28px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.title-deco span { display: flex; align-items: center; gap: 6px; }
+.deco-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+.deco-dot.blue { background: var(--blue); }
+.deco-dot.green { background: var(--green); }
+
+/* ── GAME SCREEN ── */
+#screen-game { display: none; animation: fadeIn 0.4s ease; }
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.hud-lives {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.life-icon {
+  width: 28px; height: 28px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.life-icon svg { width: 100%; height: 100%; }
+.life-icon.lost { opacity: 0.2; transform: scale(0.8); }
+
+.hud-q {
+  font-family: var(--font-title);
+  font-size: 22px;
+  color: var(--orange);
+  letter-spacing: 2px;
+}
+
+.hud-skips {
+  display: flex;
+  gap: 4px;
+}
+.skip-pip {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.skip-pip.available {
+  border-color: var(--green);
+  color: var(--green);
+}
+.skip-pip.available:hover { background: #33ff8822; }
+
+.question-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background 0.3s;
+}
+
+#q-text {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 4.5vw, 32px);
+  color: var(--text);
+  text-align: center;
+  letter-spacing: 2px;
+  line-height: 1.3;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.ans-btn {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 12px;
+  font-family: var(--font-title);
+  font-size: clamp(16px, 3vw, 22px);
+  color: var(--text);
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+  min-height: 72px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+}
+.ans-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--orange);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.ans-btn:hover { border-color: var(--orange); background: var(--orange-glow); transform: translateY(-2px); }
+.ans-btn:active { transform: scale(0.97); }
+.ans-btn.correct { border-color: var(--green); background: #33ff8822; animation: flash-correct 0.4s; }
+.ans-btn.wrong-flash { border-color: var(--red); background: #ff333322; animation: flash-wrong 0.4s; }
+
+@keyframes flash-correct { 0%,100%{} 50%{ background: #33ff8844; } }
+@keyframes flash-wrong { 0%,100%{} 25%,75%{ transform: translateX(-4px); } 50%{ transform: translateX(4px); } }
+
+/* ── WRONG TOAST ── */
+#toast-wrong {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: #ff333399;
+  border: 3px solid var(--red);
+  border-radius: var(--radius);
+  padding: 20px 40px;
+  font-family: var(--font-title);
+  font-size: 40px;
+  color: #fff;
+  letter-spacing: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  text-align: center;
+}
+#toast-wrong.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── OVERLAY SCREENS ── */
+.overlay-screen {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.5s ease;
+}
+.overlay-screen.active { display: flex; }
+
+#screen-gameover .go-title {
+  font-family: var(--font-title);
+  font-size: 80px;
+  color: var(--red);
+  letter-spacing: 6px;
+  filter: drop-shadow(0 0 20px #ff3333aa);
+  animation: shakeGO 0.6s ease;
+}
+#screen-gameover .go-sub {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 12px 0 32px;
+}
+
+#screen-win .win-title {
+  font-family: var(--font-title);
+  font-size: 70px;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--gold), var(--orange), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse-logo 2s infinite;
+}
+#screen-win .win-sub {
+  font-size: 16px;
+  color: var(--muted);
+  margin: 16px 0 8px;
+}
+#screen-win .win-score {
+  font-family: var(--font-title);
+  font-size: 48px;
+  color: var(--gold);
+  margin-bottom: 32px;
+}
+
+.btn-retry {
+  font-family: var(--font-title);
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: var(--bg);
+  background: var(--orange);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 44px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px var(--orange-glow);
+}
+.btn-retry:hover { transform: scale(1.05); box-shadow: 0 6px 30px #ff6b1a66; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shakeGO { 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-3deg) scale(1.05); } 75%{ transform: rotate(3deg) scale(1.05); } }
+
+/* ── SPECIAL QUESTION ELEMENTS ── */
+#special-zone {
+  position: relative;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.hidden-btn {
+  position: absolute;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: transparent;
+  font-size: 1px;
+}
+
+.hidden-btn:hover { outline: none; }
+
+.circle-zone {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--red);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-title);
+  font-size: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin: 0 auto;
+}
+.circle-zone:hover { border-color: var(--green); background: #33ff8822; }
+
+.word-cluster {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center;
+  padding: 12px;
+}
+.wc-item {
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  font-family: var(--font-title);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--card);
+}
+.wc-item:hover { border-color: var(--orange); background: var(--orange-glow); transform: scale(1.04); }
+
+.mouse-avoid-zone {
+  position: relative;
+  height: 160px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.mover {
+  position: absolute;
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  border: 2px solid var(--orange);
+  font-family: var(--font-title);
+  font-size: 22px;
+  cursor: pointer;
+  background: var(--card);
+  transition: border-color 0.2s;
+  white-space: nowrap;
+}
+.mover:hover { border-color: var(--red); }
+
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--gold));
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+</style>
 </head>
 <body>
-	<div id="game">
-		<div id="wrong"><span id='red'>WRONG!</span> -1 LIFE!</div>
-		<div id="gameOverScreen"><span id='redGameOver'>GAME OVER</span><span id='againGameOver'>TRY AGAIN</span></div>
-		<div id="questionText"></div>
-		<div id="titleText"></div>
-		<div class="qContainer">
-			<div class="qContainer">
-			<div id="q1" class="Qs"></div>
-			<div id="q2" class="Qs"></div>
-			</div>
-			<div class="qContainer">
-			<div id="q3" class="Qs"></div>
-			<div id="q4" class="Qs"></div>
-			</div>
-		</div>
-		<div id="bottom">
-			<div id="lives">LIVES: <span id="liveText"></span></div>
-			<div id="skips"></div>
-		</div>
-		
-	</div>
+
+<div id="app">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title">
+    <div class="logo-wrap">
+      <span class="logo-bg">THE</span>
+      <span class="logo-main">IMPOSSIBLEACH</span>
+      <span class="logo-sub">QUIZ</span>
+    </div>
+    <p class="tagline">Prouve que tu connais Bleach... ou meurs d'embarras.</p>
+    <button class="btn-start" id="btn-start">COMMENCER</button>
+    <div class="title-deco">
+      <span><span class="deco-dot"></span>12 questions</span>
+      <span><span class="deco-dot blue"></span>3 vies</span>
+      <span><span class="deco-dot green"></span>5 skips</span>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game">
+    <div class="hud">
+      <div class="hud-lives" id="hud-lives"></div>
+      <div class="hud-q" id="hud-q">Q.1</div>
+      <div class="hud-skips" id="hud-skips"></div>
+    </div>
+
+    <div class="question-box">
+      <div id="q-text">...</div>
+    </div>
+
+    <div id="special-zone" style="display:none"></div>
+
+    <div class="answers-grid" id="answers-grid"></div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST WRONG -->
+<div id="toast-wrong">❌ FAUX ! -1 VIE</div>
+
+<!-- GAME OVER -->
+<div id="screen-gameover" class="overlay-screen">
+  <div class="go-title">GAME<br>OVER</div>
+  <p class="go-sub" id="go-sub">Tu t'es arrêté à la question <span id="go-q">?</span></p>
+  <button class="btn-retry" id="btn-retry-go">RÉESSAYER</button>
+</div>
+
+<!-- WIN -->
+<div id="screen-win" class="overlay-screen">
+  <div class="win-title">VICTOIRE !</div>
+  <p class="win-sub">Ichigo serait fier de toi.</p>
+  <div class="win-score" id="win-score">Score : 0</div>
+  <button class="btn-retry" id="btn-retry-win">REJOUER</button>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+/* ─────────────────────────────────────────
+   STATE
+───────────────────────────────────────── */
+let lives = 3;
+let skipsLeft = 5;
+let level = 0;
+let score = 0;
+let blockInput = false;
+let cantTouchBlue = false;
+let mouseAvoidInterval = null;
+
+/* ─────────────────────────────────────────
+   QUESTIONS
+   type: 'normal' | 'click-word' | 'hidden' | 'mouse-avoid' | 'drag-rank' | 'color' | 'backwards' | 'image-pick'
+───────────────────────────────────────── */
+const questions = [
+
+  /* 1 */
+  {
+    text: "COMBIEN DE FOIS ICHIGO MEURT ET REVIT DANS BLEACH ?",
+    answers: ["ZÉRO, IL EST IMMORTEL", "TROP DE FOIS POUR COMPTER", "EXACTEMENT 3 FOIS", "DEMANDE À KUBO"],
+    correct: 3,
+    comment: "Kubo lui-même a perdu le compte."
+  },
+
+  /* 2 */
+  {
+    text: "QUEL EST LE NOM DU ZANPAKUTO D'ICHIGO ?",
+    answers: ["ZANGETSU", "TENSA ZANGETSU", "BENIHIME", "SODE NO SHIRAYUKI"],
+    correct: 0,
+    comment: "Zangetsu — ou le vieux gentleman aux lunettes noires."
+  },
+
+  /* 3 — BACKWARDS */
+  {
+    text: "RÉPONDS À REBOURS : ASNAB AJ ED MAN EL TSEUQ",
+    answers: ["AYASEGAWA", "SASAKIBE", "OETSU NIMAIYA", "JUSHIRO UKITAKE"],
+    correct: 2,
+    type: "backwards",
+    comment: "C'est 'QUEL EST LE NOM DE JA BANXA' à l'envers. Nimaiya forge les Asauchi."
+  },
+
+  /* 4 — CLICK LE MOT CACHÉ */
+  {
+    text: 'CLIQUE SUR <span id="secret-word" style="cursor:pointer;color:transparent;font-family:Bangers,cursive;font-size:inherit;letter-spacing:inherit;transition:color 0.3s">LA RÉPONSE</span>',
+    answers: ["HORS SERVICE", "HORS SERVICE", "HORS SERVICE", "HORS SERVICE"],
+    correct: -1,
+    type: "click-word",
+    comment: "Tu devais cliquer sur 'LA RÉPONSE' dans la question elle-même."
+  },
+
+  /* 5 */
+  {
+    text: "COMBIEN Y A-T-IL DE DIVISIONS DANS LA GOTEI 13 ?",
+    answers: ["10", "12", "13", "15"],
+    correct: 2,
+    comment: "13. C'est dans le nom, champion."
+  },
+
+  /* 6 — VRAIE LOGIQUE TROLL */
+  {
+    text: "√HOLLOW = ?",
+    answers: ["28", "VASTO LORDE", "ARRANCAR", "π"],
+    correct: 1,
+    comment: "La racine carrée d'un Hollow ? Un être à moitié-Hollow, soit un Vasto Lorde (ou Arrancar). On attendait VASTO LORDE."
+  },
+
+  /* 7 */
+  {
+    text: "QUELLE EST LA COULEUR DU REIATSU D'ICHIGO EN SHIKAI ?",
+    answers: ["ROUGE", "BLEU", "ORANGE", "VIOLET"],
+    correct: 2,
+    comment: "Orange, comme ses cheveux signature."
+  },
+
+  /* 8 — TROUVE LE BOUTON CACHÉ */
+  {
+    text: "CHERCHE LA SORTIE !",
+    answers: [],
+    correct: -1,
+    type: "hidden",
+    comment: "Il fallait trouver le vrai bouton parmi les faux."
+  },
+
+  /* 9 — MÉMOIRE */
+  {
+    text: "QUELLE ÉTAIT LA RÉPONSE À LA QUESTION 2 ?",
+    answers: ["CELUI-LÀ →", "CELUI-LÀ ↙", "CELUI-LÀ ↑", "ZANGETSU"],
+    correct: 3,
+    comment: "Zangetsu. Question 2. Tu devais t'en souvenir."
+  },
+
+  /* 10 */
+  {
+    text: "QUI A CRÉÉ LES BANKAI DE TOUS LES SHINIGAMI ?",
+    answers: ["YHWACH", "ICHIBE HYOSUBE", "OETSU NIMAIYA", "ROYAL KEY"],
+    correct: 2,
+    comment: "Oetsu Nimaiya, le 5ème membre de la Garde Royale, forge les Asauchi."
+  },
+
+  /* 11 — TROLL ULTIME */
+  {
+    text: "LEQUEL EST COMESTIBLE ?",
+    answers: [],
+    correct: -1,
+    type: "food-pick",
+    comment: "C'était le Senbonzakura — sakura = fleurs de cerisier = décoration de gâteau."
+  },
+
+  /* 12 — FINALE */
+  {
+    text: "QUE DIT ICHIGO AVANT PRESQUE CHAQUE COMBAT ?",
+    answers: ["'JE VAIS TE TUER'", "'JE PROTÈGERAI TOUT LE MONDE'", "'BANKAI !'", "'GETSUGA TENSHO !'"],
+    correct: 1,
+    comment: "Son arc narratif entier. Protéger ceux à qui il tient."
+  }
+];
+
+/* ─────────────────────────────────────────
+   HELPERS
+───────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const qs = sel => document.querySelector(sel);
+const qsa = sel => document.querySelectorAll(sel);
+
+function showToast(msg, color) {
+  const t = $('toast-wrong');
+  t.textContent = msg || '❌ FAUX ! -1 VIE';
+  if (color) t.style.background = color + '99';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1200);
+}
+
+function loseLife(btnEl) {
+  if (lives <= 0) return;
+  lives--;
+  if (btnEl) btnEl.classList.add('wrong-flash');
+  renderHUD();
+  showToast();
+  if (lives <= 0) {
+    setTimeout(showGameOver, 900);
+  }
+}
+
+function renderHUD() {
+  const hudLives = $('hud-lives');
+  hudLives.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const d = document.createElement('div');
+    d.className = 'life-icon' + (i >= lives ? ' lost' : '');
+    d.innerHTML = `<svg viewBox="0 0 24 24" fill="${i < lives ? '#ff6b1a' : '#444'}">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>`;
+    hudLives.appendChild(d);
+  }
+
+  const hudSkips = $('hud-skips');
+  hudSkips.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const d = document.createElement('div');
+    d.className = 'skip-pip' + (i < skipsLeft ? ' available' : '');
+    d.textContent = '▶';
+    if (i < skipsLeft) {
+      d.addEventListener('click', useSkip);
+    }
+    hudSkips.appendChild(d);
+  }
+
+  $('hud-q').textContent = `Q.${level + 1}`;
+  $('progress-fill').style.width = (level / questions.length * 100) + '%';
+}
+
+function useSkip() {
+  if (skipsLeft <= 0 || blockInput) return;
+  skipsLeft--;
+  score = Math.max(0, score - 5);
+  nextQuestion();
+}
+
+function nextQuestion() {
+  level++;
+  blockInput = false;
+  renderQuestion();
+}
+
+function showGameOver() {
+  $('screen-gameover').classList.add('active');
+  $('go-q').textContent = level + 1;
+}
+
+function showWin() {
+  $('screen-win').classList.add('active');
+  $('win-score').textContent = `Score : ${score}`;
+}
+
+function restart() {
+  lives = 3;
+  skipsLeft = 5;
+  level = 0;
+  score = 0;
+  blockInput = false;
+  cantTouchBlue = false;
+  clearInterval(mouseAvoidInterval);
+  $('screen-gameover').classList.remove('active');
+  $('screen-win').classList.remove('active');
+  renderQuestion();
+}
+
+/* ─────────────────────────────────────────
+   RENDER QUESTION
+───────────────────────────────────────── */
+function renderQuestion() {
+  if (level >= questions.length) { showWin(); return; }
+
+  const q = questions[level];
+  renderHUD();
+
+  $('q-text').innerHTML = q.text;
+  $('q-text').style.transform = '';
+
+  const special = $('special-zone');
+  const grid = $('answers-grid');
+  special.style.display = 'none';
+  special.innerHTML = '';
+  grid.style.display = 'grid';
+  grid.innerHTML = '';
+
+  switch (q.type) {
+
+    case 'click-word':
+      renderNormalAnswers(q, true);
+      setupClickWord();
+      break;
+
+    case 'backwards':
+      $('q-text').style.transform = 'scaleX(-1)';
+      renderNormalAnswers(q);
+      break;
+
+    case 'hidden':
+      renderHiddenSearch();
+      break;
+
+    case 'food-pick':
+      renderFoodPick();
+      break;
+
+    default:
+      renderNormalAnswers(q);
+  }
+}
+
+/* ─────────────────────────────────────────
+   NORMAL ANSWERS
+───────────────────────────────────────── */
+function renderNormalAnswers(q, disableAll) {
+  const grid = $('answers-grid');
+  q.answers.forEach((ans, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.innerHTML = ans;
+    if (disableAll) {
+      btn.addEventListener('click', () => loseLife(btn));
+    } else {
+      btn.addEventListener('click', () => {
+        if (blockInput) return;
+        if (i === q.correct) {
+          blockInput = true;
+          btn.classList.add('correct');
+          score += 10;
+          setTimeout(nextQuestion, 600);
+        } else {
+          loseLife(btn);
+        }
+      });
+    }
+    grid.appendChild(btn);
+  });
+}
+
+/* ─────────────────────────────────────────
+   CLICK-WORD (Q4)
+───────────────────────────────────────── */
+function setupClickWord() {
+  const sw = $('secret-word');
+  if (!sw) return;
+  sw.addEventListener('mouseenter', () => { sw.style.color = 'var(--orange)'; });
+  sw.addEventListener('mouseleave', () => { sw.style.color = 'transparent'; });
+  sw.addEventListener('click', (e) => {
+    if (blockInput) return;
+    blockInput = true;
+    e.stopPropagation();
+    sw.style.color = 'var(--green)';
+    score += 10;
+    setTimeout(nextQuestion, 600);
+  });
+}
+
+/* ─────────────────────────────────────────
+   HIDDEN SEARCH (Q8)
+───────────────────────────────────────── */
+function renderHiddenSearch() {
+  const grid = $('answers-grid');
+  grid.style.display = 'none';
+  const special = $('special-zone');
+  special.style.display = 'block';
+
+  const zone = document.createElement('div');
+  zone.style.cssText = 'position:relative;width:100%;height:200px;background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;';
+
+  const decoys = [
+    { label: 'Nope', x: 20, y: 30 },
+    { label: 'Non', x: 65, y: 55 },
+    { label: 'Cherche encore', x: 30, y: 72 },
+    { label: ':(', x: 75, y: 15 },
+    { label: 'X', x: 10, y: 62 },
+    { label: 'Pas là', x: 50, y: 80 },
+  ];
+
+  decoys.forEach(d => {
+    const el = document.createElement('div');
+    el.style.cssText = `position:absolute;left:${d.x}%;top:${d.y}%;color:transparent;font-family:Bangers,cursive;font-size:20px;cursor:pointer;padding:6px 10px;transition:color 0.2s;`;
+    el.textContent = d.label;
+    el.addEventListener('mouseenter', () => { el.style.color = 'var(--red)'; });
+    el.addEventListener('mouseleave', () => { el.style.color = 'transparent'; });
+    el.addEventListener('click', () => { if (blockInput) return; loseLife(); });
+    zone.appendChild(el);
+  });
+
+  const correct = document.createElement('div');
+  correct.style.cssText = 'position:absolute;left:48%;top:43%;color:transparent;font-size:28px;cursor:pointer;padding:8px 12px;transition:color 0.2s;';
+  correct.textContent = '✓';
+  correct.addEventListener('mouseenter', () => { correct.style.color = 'var(--green)'; });
+  correct.addEventListener('mouseleave', () => { correct.style.color = 'transparent'; });
+  correct.addEventListener('click', () => {
+    if (blockInput) return;
+    blockInput = true;
+    correct.style.color = 'var(--green)';
+    score += 10;
+    setTimeout(nextQuestion, 500);
+  });
+  zone.appendChild(correct);
+  special.appendChild(zone);
+}
+
+/* ─────────────────────────────────────────
+   FOOD PICK (Q11)
+───────────────────────────────────────── */
+function renderFoodPick() {
+  const grid = $('answers-grid');
+  grid.style.display = 'none';
+  const special = $('special-zone');
+  special.style.display = 'block';
+
+  const items = [
+    { label: '⚡ GETSUGA TENSHO', correct: false },
+    { label: '🌸 SENBONZAKURA', correct: true },
+    { label: '👁 SHARINGAN', correct: false },
+    { label: '🔰 QUINCY CROSS', correct: false },
+    { label: '🗡 TENSA ZANGETSU', correct: false },
+  ];
+
+  const wrap = document.createElement('div');
+  wrap.className = 'word-cluster';
+
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'wc-item';
+    el.textContent = item.label;
+    el.addEventListener('click', () => {
+      if (blockInput) return;
+      if (item.correct) {
+        blockInput = true;
+        el.style.borderColor = 'var(--green)';
+        el.style.background = '#33ff8822';
+        score += 10;
+        setTimeout(nextQuestion, 600);
+      } else {
+        loseLife();
+      }
+    });
+    wrap.appendChild(el);
+  });
+
+  special.appendChild(wrap);
+}
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+$('btn-start').addEventListener('click', () => {
+  $('screen-title').style.display = 'none';
+  $('screen-game').style.display = 'block';
+  renderQuestion();
+});
+
+$('btn-retry-go').addEventListener('click', () => {
+  $('screen-title').style.display = 'none';
+  $('screen-game').style.display = 'block';
+  restart();
+});
+
+$('btn-retry-win').addEventListener('click', () => {
+  $('screen-title').style.display = 'none';
+  $('screen-game').style.display = 'block';
+  restart();
+});
+
+})();
+</script>
 </body>
 </html>
