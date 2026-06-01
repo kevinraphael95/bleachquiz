@@ -933,6 +933,8 @@ input[type="range"].slider-ctrl {
   animation: fade-in-overlay 0.4s var(--ease-snap) both;
 }
 
+.overlay[hidden] { display: none !important; }
+
 @keyframes fade-in-overlay {
   from { opacity: 0; }
   to   { opacity: 1; }
