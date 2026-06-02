@@ -58,6 +58,10 @@ html, body {
   user-select: none;
 }
 
+#screen-title {
+  background: #5b7fe8;
+}
+
 /* ──────────────────────────────
    CANVAS BACKGROUND
 ────────────────────────────── */
