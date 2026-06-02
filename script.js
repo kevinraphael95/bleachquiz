@@ -43,7 +43,7 @@ const STATE = {
       vy: (Math.random() - 0.5) * 0.3,
       size: Math.random() * 1.5 + 0.3,
       alpha: Math.random() * 0.4 + 0.05,
-      color: Math.random() < 0.15 ? '#c8000a' : Math.random() < 0.1 ? '#d4a017' : '#f5f0e8'
+      color: Math.random() < 0.15 ? '#e83030' : Math.random() < 0.1 ? '#ffffff' : '#7ba4f0'
     };
   }
 
