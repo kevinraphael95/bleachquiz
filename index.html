@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The ImpossiBLEACH Quiz</title>
+  <title>That Bleach Quiz</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Shrikhand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Shrikhand&family=Kalam:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -27,32 +27,17 @@
 
     <div class="title-content">
       <div class="title-eyebrow">GOTEI 13 ENTERTAINMENT</div>
-
       <div class="title-logo-wrap">
-        <div class="title-logo-the">THE</div>
-        <div class="title-logo-main">
-          <span class="logo-impos">IMPOSSI</span><span class="logo-bleach">BLEACH</span>
-        </div>
-        <div class="title-logo-quiz">QUIZ</div>
+        <div class="logo-that">THAT</div>
+        <div class="logo-bleach">BLEACH</div>
+        <div class="logo-quiz">QUIZ</div>
       </div>
-
-      <p class="title-desc">
-        20 questions. Aucune logique. 100% Bleach.<br>
-        <em>Si tu perds, c'est Aizen qui gagne.</em>
-      </p>
-
-      <div class="title-stats" aria-label="Informations du jeu">
-        <div class="stat-pill"><span class="stat-num">20</span><span class="stat-lbl">QUESTIONS</span></div>
+      <div class="title-stats">
+        <div class="stat-pill"><span class="stat-num">?</span><span class="stat-lbl">QUESTIONS</span></div>
         <div class="stat-pill stat-pill--red"><span class="stat-num">3</span><span class="stat-lbl">VIES</span></div>
         <div class="stat-pill stat-pill--green"><span class="stat-num">5</span><span class="stat-lbl">SKIPS</span></div>
       </div>
-
-      <button class="btn-bankai" id="btn-start" aria-label="Démarrer le quiz">
-        <span class="btn-bankai-text">BANKAI !</span>
-        <span class="btn-bankai-sub">APPUIE POUR COMMENCER</span>
-      </button>
-
-      <div class="title-footer">INSPIRÉ DE THE IMPOSSIBLE QUIZ</div>
+      <button class="btn-jouer" id="btn-start">JOUER !</button>
     </div>
   </section>
 
@@ -117,7 +102,7 @@
   <div class="overlay" id="overlay-win" aria-modal="true" role="alertdialog" aria-labelledby="win-title" hidden>
     <div class="overlay-inner overlay-inner--gold">
       <div class="overlay-impact overlay-impact--gold" aria-hidden="true"></div>
-      <h1 class="overlay-title overlay-title--gold" id="win-title">BANKAI<br>COMPLET !</h1>
+      <h1 class="overlay-title overlay-title--gold" id="win-title">BRAVO !</h1>
       <p class="overlay-sub">Tu as survécu. Même Aizen est impressionné.</p>
       <div class="overlay-stats" id="win-stats"></div>
       <div class="win-rank" id="win-rank"></div>
