@@ -13,9 +13,7 @@
 
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <!-- ═══════════════════════════════════
-       ÉCRAN TITRE
-  ════════════════════════════════════ -->
+  <!-- ÉCRAN TITRE -->
   <section id="screen-title" class="screen active" aria-label="Écran titre">
     <div class="title-impact-lines" aria-hidden="true">
       <div class="impact-line"></div>
@@ -24,7 +22,6 @@
       <div class="impact-line"></div>
       <div class="impact-line"></div>
     </div>
-
     <div class="title-content">
       <div class="title-logo-wrap">
         <div class="logo-that">THAT</div>
@@ -40,51 +37,42 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════
-       ÉCRAN JEU
-  ════════════════════════════════════ -->
+  <!-- ÉCRAN JEU -->
   <section id="screen-game" class="screen" aria-label="Jeu en cours">
+    <div class="game-inner">
 
-    <!-- HUD -->
-    <header class="hud" role="status" aria-live="polite">
-      <div class="hud-block hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
-
-      <div class="hud-block hud-center">
-        <div class="hud-qnum" id="hud-qnum" aria-label="Numéro de question">Q.1</div>
-        <div class="hud-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="hud-progressbar-fill" id="hud-prog"></div>
+      <header class="hud" role="status" aria-live="polite">
+        <div class="hud-block hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
+        <div class="hud-block hud-center">
+          <div class="hud-qnum" id="hud-qnum" aria-label="Numéro de question">Q.1</div>
+          <div class="hud-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="hud-progressbar-fill" id="hud-prog"></div>
+          </div>
         </div>
+        <div class="hud-block hud-right">
+          <div class="hud-score" id="hud-score" aria-label="Score">0 PTS</div>
+          <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
+        </div>
+      </header>
+
+      <div class="question-card" id="question-card">
+        <div class="question-number" id="q-num" aria-hidden="true">01</div>
+        <div class="question-text" id="q-text" role="heading" aria-level="2"></div>
       </div>
 
-      <div class="hud-block hud-right">
-        <div class="hud-score" id="hud-score" aria-label="Score">0 PTS</div>
-        <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
+      <div class="comment-bar" id="comment-bar" aria-live="polite" hidden>
+        <span class="comment-icon" aria-hidden="true">💬</span>
+        <span class="comment-text" id="comment-text"></span>
       </div>
-    </header>
 
-    <!-- QUESTION -->
-    <div class="question-card" id="question-card">
-      <div class="question-number" id="q-num" aria-hidden="true">01</div>
-      <div class="question-text" id="q-text" role="heading" aria-level="2"></div>
+      <div class="special-zone" id="special-zone" hidden></div>
+
+      <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
+
     </div>
-
-    <!-- COMMENTAIRE (affiché après bonne réponse) -->
-    <div class="comment-bar" id="comment-bar" aria-live="polite" hidden>
-      <span class="comment-icon" aria-hidden="true">💬</span>
-      <span class="comment-text" id="comment-text"></span>
-    </div>
-
-    <!-- ZONE SPÉCIALE (drag, slider, couleurs, hidden…) -->
-    <div class="special-zone" id="special-zone" hidden></div>
-
-    <!-- RÉPONSES CLASSIQUES -->
-    <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
-
   </section>
 
-  <!-- ═══════════════════════════════════
-       OVERLAY GAME OVER
-  ════════════════════════════════════ -->
+  <!-- OVERLAY GAME OVER -->
   <div class="overlay" id="overlay-gameover" aria-modal="true" role="alertdialog" aria-labelledby="go-title" hidden>
     <div class="overlay-inner overlay-inner--red">
       <div class="overlay-impact" aria-hidden="true"></div>
@@ -95,9 +83,7 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════
-       OVERLAY VICTOIRE
-  ════════════════════════════════════ -->
+  <!-- OVERLAY VICTOIRE -->
   <div class="overlay" id="overlay-win" aria-modal="true" role="alertdialog" aria-labelledby="win-title" hidden>
     <div class="overlay-inner overlay-inner--gold">
       <div class="overlay-impact overlay-impact--gold" aria-hidden="true"></div>
@@ -109,7 +95,7 @@
     </div>
   </div>
 
-  <!-- TOAST MAUVAISE RÉPONSE -->
+  <!-- TOAST -->
   <div class="toast" id="toast" aria-live="assertive" aria-atomic="true">
     <span class="toast-wrong">✗ FAUX !</span>
     <span class="toast-life">−1 VIE</span>
