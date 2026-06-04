@@ -15,7 +15,7 @@
 
   <!-- ÉCRAN TITRE -->
   <section id="screen-title" class="screen active" aria-label="Écran titre">
-    <div class="title-impact-lines" aria-hidden="true">
+    <div class="bg-lines" aria-hidden="true">
       <div class="impact-line"></div>
       <div class="impact-line"></div>
       <div class="impact-line"></div>
@@ -29,7 +29,7 @@
         <div class="logo-quiz">QUIZ</div>
       </div>
       <div class="title-stats">
-        <div class="stat-pill"><span class="stat-num">?</span><span class="stat-lbl">QUESTIONS</span></div>
+        <div class="stat-pill"><span class="stat-num" id="stat-total">?</span><span class="stat-lbl">QUESTIONS</span></div>
         <div class="stat-pill stat-pill--red"><span class="stat-num">3</span><span class="stat-lbl">VIES</span></div>
         <div class="stat-pill stat-pill--green"><span class="stat-num">5</span><span class="stat-lbl">SKIPS</span></div>
       </div>
@@ -39,6 +39,13 @@
 
   <!-- ÉCRAN JEU -->
   <section id="screen-game" class="screen" aria-label="Jeu en cours">
+    <div class="bg-lines" aria-hidden="true">
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+      <div class="impact-line"></div>
+    </div>
     <div class="game-inner">
 
       <header class="hud" role="status" aria-live="polite">
