@@ -265,7 +265,7 @@ function loadQuestion() {
   updateHUD();
   saveProgress();
 
-  qNum.textContent = String(STATE.currentQ + 1).padStart(2, '0');
+  qNum.textContent = STATE.currentQ + 1;
 
   if (q.type === 'secret_word') {
     renderSecretWordQuestion(q);
