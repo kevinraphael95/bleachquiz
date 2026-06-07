@@ -1,11 +1,10 @@
 /* ═══════════════════════════════════════════════════
-   THE IMPOSSIBLEACH QUIZ — script.js
-   Logique du jeu — ne pas modifier pour ajouter des questions,
-   éditer questions.js à la place.
-   Dépend de : questions.js (chargé avant dans le HTML)
+   THAT BLEACH QUIZ — script.js
 ════════════════════════════════════════════════════ */
 
 'use strict';
+
+const SAVE_KEY = 'bleachquiz_save';
 
 /* ──────────────────────────────
    ÉTAT DU JEU
@@ -22,7 +21,41 @@ const STATE = {
 };
 
 /* ──────────────────────────────
-   CANVAS BACKGROUND — particules manga
+   PERSISTANCE
+────────────────────────────── */
+function saveProgress() {
+  const data = {
+    currentQ:          STATE.currentQ,
+    lives:             STATE.lives,
+    skips:             STATE.skips,
+    score:             STATE.score,
+    answeredCorrectly: STATE.answeredCorrectly,
+    skipsUsed:         STATE.skipsUsed,
+    wrongAnswers:      STATE.wrongAnswers,
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    // Ne restaurer que si la partie est en cours (pas terminée, pas game-over)
+    if (data.currentQ == null || data.currentQ >= QUESTIONS.length) return false;
+    if (data.lives <= 0) return false;
+    Object.assign(STATE, data);
+    STATE.locked = false;
+    return true;
+  } catch { return false; }
+}
+
+function clearProgress() {
+  localStorage.removeItem(SAVE_KEY);
+}
+
+/* ──────────────────────────────
+   CANVAS BACKGROUND
 ────────────────────────────── */
 (function initCanvas() {
   const canvas = document.getElementById('bg-canvas');
@@ -54,12 +87,9 @@ const STATE = {
   function loop() {
     ctx.clearRect(0, 0, W, H);
     for (const p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
       ctx.globalAlpha = p.alpha;
       ctx.fillStyle = p.color;
       ctx.beginPath();
@@ -87,12 +117,26 @@ const hudSkips     = $('hud-skips');
 const qNum         = $('q-num');
 const qText        = $('q-text');
 const answersGrid  = $('answers-grid');
-const commentBar   = $('comment-bar');
-const commentText  = $('comment-text');
 const specialZone  = $('special-zone');
 const toast        = $('toast');
 const overlayGO    = $('overlay-gameover');
 const overlayWin   = $('overlay-win');
+const btnStart     = $('btn-start');
+const btnRestart   = $('btn-restart');
+
+/* ──────────────────────────────
+   ÉCRAN TITRE — état des boutons
+────────────────────────────── */
+function updateTitleScreen() {
+  const hasSave = !!localStorage.getItem(SAVE_KEY);
+  if (hasSave) {
+    btnStart.textContent = 'CONTINUER';
+    btnRestart.removeAttribute('hidden');
+  } else {
+    btnStart.textContent = 'JOUER !';
+    btnRestart.setAttribute('hidden', '');
+  }
+}
 
 /* ──────────────────────────────
    NAVIGATION ÉCRANS
@@ -101,7 +145,6 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
 function showOverlay(el) { el.removeAttribute('hidden'); }
 function hideOverlay(el) { el.setAttribute('hidden', ''); }
 
@@ -119,8 +162,14 @@ function resetState() {
   STATE.wrongAnswers    = 0;
 }
 
-function startGame() {
-  resetState();
+function startGame(fresh = false) {
+  if (fresh) {
+    resetState();
+    clearProgress();
+  } else {
+    const restored = loadProgress();
+    if (!restored) resetState();
+  }
   showScreen('screen-game');
   loadQuestion();
 }
@@ -129,7 +178,6 @@ function startGame() {
    HUD
 ────────────────────────────── */
 function updateHUD() {
-  // Vies
   hudLives.innerHTML = '';
   for (let i = 0; i < 3; i++) {
     const heart = document.createElement('div');
@@ -143,18 +191,14 @@ function updateHUD() {
     hudLives.appendChild(heart);
   }
 
-  // Numéro question
   hudQnum.textContent = `Q.${STATE.currentQ + 1}`;
 
-  // Barre de progression
   const pct = (STATE.currentQ / QUESTIONS.length) * 100;
   hudProg.style.width = pct + '%';
   hudProg.parentElement.setAttribute('aria-valuenow', pct);
 
-  // Score
   hudScore.textContent = STATE.score + ' PTS';
 
-  // Skips
   hudSkips.innerHTML = '';
   for (let i = 0; i < 5; i++) {
     const pip = document.createElement('div');
@@ -171,13 +215,13 @@ function updateHUD() {
 ────────────────────────────── */
 function loadQuestion() {
   STATE.locked = false;
-  commentBar.setAttribute('hidden', '');
   answersGrid.innerHTML = '';
   specialZone.innerHTML = '';
   specialZone.setAttribute('hidden', '');
 
   const q = QUESTIONS[STATE.currentQ];
   updateHUD();
+  saveProgress();
 
   qNum.textContent = String(STATE.currentQ + 1).padStart(2, '0');
 
@@ -195,13 +239,12 @@ function loadQuestion() {
     case 'hidden':       renderHidden(q);        break;
     case 'avoid':        renderAvoid(q);         break;
     case 'word_cluster': renderWordCluster(q);   break;
-    case 'secret_word':  /* géré dans qText */   break;
+    case 'secret_word':                          break;
   }
 
-  // Anim entrée carte
   const card = $('question-card');
   card.style.animation = 'none';
-  card.offsetHeight; // reflow
+  card.offsetHeight;
   card.style.animation = 'screen-enter 0.35s var(--ease-snap) both';
 }
 
@@ -214,17 +257,15 @@ function onCorrect() {
   STATE.score += 100 + STATE.lives * 10;
   STATE.answeredCorrectly++;
 
-  const q = QUESTIONS[STATE.currentQ];
-  if (q.comment) {
-    commentText.textContent = q.comment;
-    commentBar.removeAttribute('hidden');
-  }
-
   setTimeout(() => {
     STATE.currentQ++;
-    if (STATE.currentQ >= QUESTIONS.length) showWin();
-    else loadQuestion();
-  }, q.comment ? 2000 : 900);
+    if (STATE.currentQ >= QUESTIONS.length) {
+      clearProgress();
+      showWin();
+    } else {
+      loadQuestion();
+    }
+  }, 900);
 }
 
 /* ──────────────────────────────
@@ -242,8 +283,10 @@ function onWrong(btn) {
 
   STATE.lives--;
   updateHUD();
+  saveProgress();
 
   if (STATE.lives <= 0) {
+    clearProgress();
     setTimeout(showGameOver, 1100);
   } else {
     setTimeout(() => {
@@ -263,8 +306,12 @@ function useSkip() {
   STATE.skips--;
   STATE.skipsUsed++;
   STATE.currentQ++;
-  if (STATE.currentQ >= QUESTIONS.length) showWin();
-  else loadQuestion();
+  if (STATE.currentQ >= QUESTIONS.length) {
+    clearProgress();
+    showWin();
+  } else {
+    loadQuestion();
+  }
 }
 
 /* ──────────────────────────────
@@ -304,7 +351,6 @@ function showWin() {
    RENDERERS PAR TYPE
 ══════════════════════════════════════════ */
 
-/* ── CLASSIC (4 boutons) ── */
 function renderClassic(q) {
   q.answers.map((text, idx) => ({ text, idx })).forEach(({ text, idx }) => {
     const btn = document.createElement('button');
@@ -319,7 +365,6 @@ function renderClassic(q) {
   });
 }
 
-/* ── SLIDER ── */
 function renderSlider(q) {
   specialZone.removeAttribute('hidden');
   const mid = Math.round((q.min + q.max) / 2);
@@ -340,7 +385,6 @@ function renderSlider(q) {
   });
 }
 
-/* ── COULEURS ── */
 function renderColors(q) {
   specialZone.removeAttribute('hidden');
   const grid = document.createElement('div');
@@ -359,7 +403,6 @@ function renderColors(q) {
   specialZone.appendChild(grid);
 }
 
-/* ── DRAG & DROP ── */
 function renderDrag(q) {
   specialZone.removeAttribute('hidden');
   let items = [...q.items].sort(() => Math.random() - 0.5);
@@ -375,26 +418,14 @@ function renderDrag(q) {
       div.draggable = true;
       div.dataset.idx = i;
       div.innerHTML = `<span class="drag-handle">⠿</span>${item}`;
-      div.addEventListener('dragstart', () => {
-        dragged = div;
-        setTimeout(() => div.classList.add('dragging'), 0);
-      });
-      div.addEventListener('dragend', () => {
-        div.classList.remove('dragging');
-        list.querySelectorAll('.drag-item').forEach(d => d.classList.remove('drag-over'));
-        dragged = null;
-      });
-      div.addEventListener('dragover', e => {
-        e.preventDefault();
-        if (div !== dragged) div.classList.add('drag-over');
-      });
+      div.addEventListener('dragstart', () => { dragged = div; setTimeout(() => div.classList.add('dragging'), 0); });
+      div.addEventListener('dragend', () => { div.classList.remove('dragging'); list.querySelectorAll('.drag-item').forEach(d => d.classList.remove('drag-over')); dragged = null; });
+      div.addEventListener('dragover', e => { e.preventDefault(); if (div !== dragged) div.classList.add('drag-over'); });
       div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
       div.addEventListener('drop', e => {
-        e.preventDefault();
-        div.classList.remove('drag-over');
+        e.preventDefault(); div.classList.remove('drag-over');
         if (dragged && dragged !== div) {
-          const fi = parseInt(dragged.dataset.idx);
-          const ti = parseInt(div.dataset.idx);
+          const fi = parseInt(dragged.dataset.idx), ti = parseInt(div.dataset.idx);
           [items[fi], items[ti]] = [items[ti], items[fi]];
           buildItems();
         }
@@ -419,7 +450,6 @@ function renderDrag(q) {
   specialZone.appendChild(wrap);
 }
 
-/* ── MOT CACHÉ cliquable dans la question ── */
 function renderSecretWordQuestion(q) {
   const parts = q.text.split(q.secretWord);
   qText.innerHTML = '';
@@ -430,17 +460,12 @@ function renderSecretWordQuestion(q) {
       secret.className = 'q-secret';
       secret.textContent = q.secretWord;
       secret.title = 'Clique ici !';
-      secret.addEventListener('click', () => {
-        if (STATE.locked) return;
-        secret.style.color = 'var(--green-ok)';
-        onCorrect();
-      });
+      secret.addEventListener('click', () => { if (STATE.locked) return; secret.style.color = 'var(--green-ok)'; onCorrect(); });
       qText.appendChild(secret);
     }
   });
 }
 
-/* ── HIDDEN (trouver le bon parmi des faux) ── */
 function renderHidden(q) {
   specialZone.removeAttribute('hidden');
   const field = document.createElement('div');
@@ -449,10 +474,8 @@ function renderHidden(q) {
   const used = new Set();
   function randPos() {
     let x, y;
-    do {
-      x = Math.random() * 55 + 5;
-      y = Math.random() * 60 + 10;
-    } while (used.has(`${Math.round(x/15)},${Math.round(y/20)}`));
+    do { x = Math.random() * 55 + 5; y = Math.random() * 60 + 10; }
+    while (used.has(`${Math.round(x/15)},${Math.round(y/20)}`));
     used.add(`${Math.round(x/15)},${Math.round(y/20)}`);
     return { x, y };
   }
@@ -473,16 +496,11 @@ function renderHidden(q) {
   correct.className = 'hidden-correct';
   correct.textContent = q.correct_text;
   correct.style.cssText = `left:${cpos.x}%; top:${cpos.y}%; font-size:13px; font-family:var(--font-impact); letter-spacing:2px;`;
-  correct.addEventListener('click', () => {
-    if (STATE.locked) return;
-    correct.style.color = 'var(--green-ok)';
-    onCorrect();
-  });
+  correct.addEventListener('click', () => { if (STATE.locked) return; correct.style.color = 'var(--green-ok)'; onCorrect(); });
   field.appendChild(correct);
   specialZone.appendChild(field);
 }
 
-/* ── AVOID (bouton qui fuit la souris) ── */
 function renderAvoid(q) {
   specialZone.removeAttribute('hidden');
   const field = document.createElement('div');
@@ -508,8 +526,7 @@ function renderAvoid(q) {
   field.addEventListener('mousemove', e => {
     if (STATE.locked) return;
     const rect = field.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
     const tx = parseFloat(target.style.left) / 100 * rect.width  + target.offsetWidth  / 2;
     const ty = parseFloat(target.style.top)  / 100 * rect.height + target.offsetHeight / 2;
     const dx = tx - mx, dy = ty - my;
@@ -526,7 +543,6 @@ function renderAvoid(q) {
   specialZone.appendChild(field);
 }
 
-/* ── WORD CLUSTER (sélection simple ou multi) ── */
 function renderWordCluster(q) {
   specialZone.removeAttribute('hidden');
   const cluster = document.createElement('div');
@@ -539,19 +555,9 @@ function renderWordCluster(q) {
     btn.textContent = word;
     btn.addEventListener('click', () => {
       if (STATE.locked) return;
-      if (!q.multi) {
-        q.correct.includes(word) ? onCorrect() : onWrong(btn);
-        return;
-      }
-      if (selected.has(word)) {
-        selected.delete(word);
-        btn.style.borderColor = '';
-        btn.style.background  = '';
-      } else {
-        selected.add(word);
-        btn.style.borderColor = 'var(--blue-reiatsu)';
-        btn.style.background  = 'rgba(26,106,255,0.1)';
-      }
+      if (!q.multi) { q.correct.includes(word) ? onCorrect() : onWrong(btn); return; }
+      if (selected.has(word)) { selected.delete(word); btn.style.borderColor = ''; btn.style.background = ''; }
+      else { selected.add(word); btn.style.borderColor = 'var(--blue-reiatsu)'; btn.style.background = 'rgba(26,106,255,0.1)'; }
     });
     cluster.appendChild(btn);
   });
@@ -563,8 +569,7 @@ function renderWordCluster(q) {
     submitBtn.textContent = 'VALIDER MA SÉLECTION';
     submitBtn.addEventListener('click', () => {
       if (STATE.locked) return;
-      JSON.stringify([...selected].sort()) === JSON.stringify([...q.correct].sort())
-        ? onCorrect() : onWrong(null);
+      JSON.stringify([...selected].sort()) === JSON.stringify([...q.correct].sort()) ? onCorrect() : onWrong(null);
     });
     const wrap = document.createElement('div');
     wrap.style.width = '100%';
@@ -579,6 +584,20 @@ function renderWordCluster(q) {
 /* ──────────────────────────────
    EVENTS GLOBAUX
 ────────────────────────────── */
-$('btn-start').addEventListener('click', startGame);
-$('btn-retry-go').addEventListener('click', () => { hideOverlay(overlayGO); startGame(); });
-$('btn-retry-win').addEventListener('click', () => { hideOverlay(overlayWin); startGame(); });
+btnStart.addEventListener('click', () => {
+  // Si save existe, continuer ; sinon nouvelle partie
+  const hasSave = !!localStorage.getItem(SAVE_KEY);
+  startGame(!hasSave);
+});
+
+btnRestart.addEventListener('click', () => {
+  clearProgress();
+  updateTitleScreen();
+  startGame(true);
+});
+
+$('btn-retry-go').addEventListener('click', () => { hideOverlay(overlayGO); startGame(true); });
+$('btn-retry-win').addEventListener('click', () => { hideOverlay(overlayWin); updateTitleScreen(); showScreen('screen-title'); updateTitleScreen(); });
+
+// Init écran titre
+updateTitleScreen();
