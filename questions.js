@@ -18,6 +18,7 @@ const QUESTIONS = [
     type: "classic",
     answers: ["Sode no Shirayuki", "Shirofuki", "Hyōrinmaru", "Zangetsu"],
     correct: 0,
+    bonusSkip: true,
   },
   // 3 — Slider (nombre)
   {
@@ -47,6 +48,7 @@ const QUESTIONS = [
       "La même chose que toi en ce moment"
     ],
     correct: 3,
+    bonusSkip: true,
   },
   // 6 — Couleurs
   {
@@ -67,6 +69,7 @@ const QUESTIONS = [
     text: "Combien de divisions y a-t-il dans le Gotei 13 ? Clique sur la réponse dans la question.",
     type: "secret_word",
     secretWord: "13",
+    bonusSkip: true,
   },
   // 8 — Mot caché cliquable dans la question
   {
@@ -90,6 +93,7 @@ const QUESTIONS = [
     type: "classic",
     answers: ["Senbonzakura", "Hyōrinmaru", "Ryūjin Jakka", "Wabisuke"],
     correct: 0,
+    bonusSkip: true,
   },
   // 11 — Piège absurde
   {
@@ -120,6 +124,7 @@ const QUESTIONS = [
     type: "classic",
     answers: ["Gin Ichimaru", "Tōsen Kaname", "Tout le monde ci-dessus", "Grimmjow"],
     correct: 2,
+    bonusSkip: true,
   },
   // 14 — Hidden (trouver le bon parmi les faux)
   {
@@ -144,6 +149,7 @@ const QUESTIONS = [
     type: "slider",
     min: 0, max: 5, step: 1,
     correct: 1,
+    bonusSkip: true,
   },
   // 17 — Piège de logique totale
   {
@@ -168,6 +174,7 @@ const QUESTIONS = [
     type: "avoid",
     targetLabel: "RÉPONSE",
     trapLabel: "FAUX",
+    bonusSkip: true,
   },
   // 20 — Finale classique
   {
@@ -187,28 +194,23 @@ const QUESTIONS = [
   // NOUVELLES QUESTIONS
   // ══════════════════════════════════════════
 
-  // 21 — Piège : bankai le plus faible (réponse pas dans les choix)
   {
     id: 21,
     text: "Qui a le Bankai le plus faible parmi ces personnages ?",
     type: "classic",
     answers: ["Ikkaku", "Hisagi", "Shinji", "Unohana"],
     correct: 3,
-    // Unohana est morte donc son bankai ne compte plus — piège logique absurde
   },
 
-  // 22 — Piège couleur : qui n'est PAS roux ?
   {
     id: 22,
     text: "Lequel de ces personnages n'est PAS roux ?",
     type: "classic",
     answers: ["Ichigo", "Orihime", "Komamura", "Matsumoto"],
     correct: 3,
-    // Matsumoto est blonde (rousse dans l'anime seulement, piège)
-    // Komamura est un chien-loup donc "roux" dans un sens animal, le vrai piège c'est Matsumoto
+    bonusSkip: true,
   },
 
-  // 23 — Trouve l'intrus (word cluster, 1 seul à sélectionner)
   {
     id: 23,
     text: "Trouve l'intrus — quel mot n'a AUCUN rapport avec Ichigo ?",
@@ -218,7 +220,6 @@ const QUESTIONS = [
     multi: false,
   },
 
-  // 24 — Piège : Komamura n'est pas roux, il est... (suite logique)
   {
     id: 24,
     text: "De quelle race est le capitaine Sajin Komamura ?",
@@ -227,11 +228,11 @@ const QUESTIONS = [
     correct: 2,
   },
 
-  // 25 — Secret word : cliquer sur "Fraise" dans la question
   {
     id: 25,
     text: "Le prénom Ichigo peut se lire « Fraise » en japonais. Clique sur Fraise pour continuer.",
     type: "secret_word",
     secretWord: "Fraise",
+    bonusSkip: true,
   },
 ];
