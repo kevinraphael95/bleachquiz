@@ -10,16 +10,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   <!-- ÉCRAN TITRE -->
-  <section id="screen-title" class="screen active" aria-label="Écran titre">
+  <section id="screen-title" class="screen active">
     <div class="bg-lines" aria-hidden="true">
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
+      <div class="impact-line"></div><div class="impact-line"></div>
+      <div class="impact-line"></div><div class="impact-line"></div>
       <div class="impact-line"></div>
     </div>
     <div class="title-content">
@@ -33,81 +30,66 @@
   </section>
 
   <!-- ÉCRAN JEU -->
-  <section id="screen-game" class="screen" aria-label="Jeu en cours">
+  <section id="screen-game" class="screen">
     <div class="bg-lines" aria-hidden="true">
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
-      <div class="impact-line"></div>
+      <div class="impact-line"></div><div class="impact-line"></div>
+      <div class="impact-line"></div><div class="impact-line"></div>
       <div class="impact-line"></div>
     </div>
 
-    <!-- QUESTION (haut) -->
-    <div class="iq-top">
-      <div class="question-card" id="question-card">
-        <div class="question-number" id="q-num" aria-hidden="true">1</div>
-        <div class="question-text" id="q-text" role="heading" aria-level="2"></div>
-      </div>
-    </div>
-
-    <!-- RÉPONSES (milieu) -->
-    <div class="iq-mid">
-      <div class="special-zone" id="special-zone" hidden></div>
-      <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
-    </div>
-
-    <!-- HUD (bas) — style Impossible Quiz -->
-    <div class="iq-bot">
-      <div class="hud-bot">
-        <!-- Vies -->
-        <div class="hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
-
-        <!-- Bouton recommencer -->
-        <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
-
-        <!-- Skips (flèches) -->
-        <div class="hud-skips-wrap">
-          <div class="hud-skips-label">SKIPS</div>
-          <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
+    <div class="game-wrap">
+      <!-- Question -->
+      <div class="iq-top">
+        <div class="question-card" id="question-card">
+          <div class="question-number" id="q-num">1</div>
+          <div class="question-text" id="q-text"></div>
         </div>
       </div>
-    </div>
 
+      <!-- Réponses -->
+      <div class="iq-mid">
+        <div class="special-zone" id="special-zone" hidden></div>
+        <div class="answers-grid" id="answers-grid"></div>
+      </div>
+
+      <!-- HUD -->
+      <div class="iq-bot">
+        <div class="hud-lives" id="hud-lives"></div>
+        <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
+        <div class="hud-skips" id="hud-skips"></div>
+      </div>
+    </div>
   </section>
 
-  <!-- OVERLAY GAME OVER -->
-  <div class="overlay" id="overlay-gameover" aria-modal="true" role="alertdialog" aria-labelledby="go-title" hidden>
+  <!-- GAME OVER -->
+  <div class="overlay" id="overlay-gameover" hidden>
     <div class="overlay-inner overlay-inner--red">
-      <div class="overlay-impact" aria-hidden="true"></div>
-      <h1 class="overlay-title" id="go-title">GAME<br>OVER</h1>
-      <p class="overlay-sub" id="go-sub">Arrêté à la question&nbsp;<strong id="go-qnum">?</strong></p>
+      <h1 class="overlay-title">GAME<br>OVER</h1>
+      <p class="overlay-sub">Arrêté à la question <strong id="go-qnum">?</strong></p>
       <button class="btn-overlay" id="btn-retry-go">RÉESSAYER</button>
     </div>
   </div>
 
-  <!-- OVERLAY VICTOIRE -->
-  <div class="overlay" id="overlay-win" aria-modal="true" role="alertdialog" aria-labelledby="win-title" hidden>
+  <!-- VICTOIRE -->
+  <div class="overlay" id="overlay-win" hidden>
     <div class="overlay-inner overlay-inner--gold">
-      <div class="overlay-impact overlay-impact--gold" aria-hidden="true"></div>
-      <h1 class="overlay-title overlay-title--gold" id="win-title">BRAVO !</h1>
+      <h1 class="overlay-title overlay-title--gold">BRAVO !</h1>
       <p class="overlay-sub">Tu as survécu. Même Aizen est impressionné.</p>
       <div class="win-rank" id="win-rank"></div>
       <button class="btn-overlay btn-overlay--gold" id="btn-retry-win">REJOUER</button>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast" aria-live="assertive" aria-atomic="true">
+  <!-- TOASTS -->
+  <div class="toast" id="toast">
     <span class="toast-wrong">✗ FAUX !</span>
     <span class="toast-life">−1 VIE</span>
   </div>
-
-  <!-- TOAST SKIP GAGNÉ -->
-  <div class="toast toast--skip" id="toast-skip" aria-live="assertive" aria-atomic="true">
+  <div class="toast toast--skip" id="toast-skip">
     <span class="toast-skip-text">+1 SKIP ⚡</span>
   </div>
 
-  <script src="questions.js?v=2"></script>
-  <script src="script.js?v=2"></script>
+  <script src="questions.js?v=3"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>
