@@ -101,28 +101,26 @@ html, body {
 #screen-game {
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   padding: 0;
   background: transparent;
   position: relative; z-index: 1;
-  gap: clamp(12px, 2vw, 24px);
+  gap: clamp(16px, 2.5vw, 28px);
 }
 
 /* ── Question ── */
 .iq-top {
   flex-shrink: 0;
+  width: min(860px, 95vw);
   padding: 0 clamp(20px,4vw,50px);
-  display: flex;
-  justify-content: center;
 }
 
 .question-card {
   position: relative;
   width: 100%; max-width: 860px; margin: 0 auto;
-  background: rgba(255,255,255,0.95);
-  border: 3px solid var(--iq-blue);
-  border-radius: 10px;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   display: flex; align-items: center;
   padding-left: clamp(64px, 9vw, 100px);
   min-height: clamp(55px, 10vw, 90px);
@@ -134,14 +132,17 @@ html, body {
   left: 0; top: 50%; transform: translateY(-50%);
   width: clamp(44px, 7vw, 72px);
   height: clamp(44px, 7vw, 72px);
-  border: clamp(3px,0.5vw,5px) solid var(--iq-red);
-  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-iq); font-weight: 700;
   font-size: clamp(18px, 3.2vw, 30px);
   color: var(--iq-red);
   pointer-events: none;
   flex-shrink: 0;
+  /* Cercle SVG irrégulier façon dessiné à la main */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 8 C63 5, 88 12, 93 28 C98 44, 95 68, 82 80 C69 92, 42 97, 25 88 C8 79, 3 55, 7 36 C11 17, 37 11, 50 8 Z' fill='none' stroke='%23cc1111' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .question-text {
@@ -162,8 +163,8 @@ html, body {
 /* ── Boutons ── */
 .iq-mid {
   flex-shrink: 0;
-  width: 100%; max-width: 860px; margin: 0 auto;
-  padding: clamp(8px,1.2vw,14px) clamp(20px,4vw,50px);
+  width: min(860px, 95vw);
+  padding: 0 clamp(20px,4vw,50px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   gap: clamp(10px,1.6vw,16px);
@@ -181,7 +182,7 @@ html, body {
 /* Bouton style IQ : fond rose, bordure bleue, traits latéraux */
 .ans-btn {
   position: relative;
-  background: #f0c0ff;
+  background: #fff;
   border: 4px solid var(--iq-blue);
   border-radius: 4px;
   box-shadow: none;
