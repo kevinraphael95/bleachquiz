@@ -66,7 +66,7 @@ const QUESTIONS = [
   // 7 — SECRET WORD : cliquer sur "13" dans la question
   {
     id: 7,
-    text: "Combien de divisions y a-t-il dans le Gotei 13 ?",
+    text: "Combien y a t-il de divisions dans le Gotei 13 ?",
     type: "secret_word",
     secretWord: "13",
     fakeAnswers: ["6", "12", "20", "46"],
