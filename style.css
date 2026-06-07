@@ -160,7 +160,6 @@ html, body {
    Question haut | Réponses milieu | HUD bas
 ════════════════════════════════════════ */
 #screen-game {
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
