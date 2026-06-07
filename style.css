@@ -319,12 +319,13 @@ html, body {
   position: relative; z-index: 1; width: 100%;
 }
 .q-secret {
-  color: transparent; cursor: pointer;
+  color: var(--red-bright); cursor: pointer;
   display: inline; padding: 0 2px;
-  border-bottom: 2px dashed rgba(200,0,10,0.35);
-  transition: color 0.2s;
+  border-bottom: 2px dashed var(--red-bright);
+  transition: opacity 0.2s;
+  font-weight: bold;
 }
-.q-secret:hover { color: var(--red-bright); }
+.q-secret:hover { opacity: 0.7; }
 
 .special-zone { width: 100%; flex-shrink: 0; }
 
