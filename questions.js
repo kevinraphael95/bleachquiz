@@ -8,8 +8,8 @@ const QUESTIONS = [
     id: 1,
     text: "Combien de temps Ichigo a-t-il mis pour maîtriser le Bankai ?",
     type: "classic",
-    answers: ["3 jours", "1 semaine", "10 ans", "Il ne l'a jamais maîtrisé"],
-    correct: 0,
+    answers: ["1 jour", "2 jours", "3 jours", "Il ne l'a jamais maîtrisé"],
+    correct: 3,
   },
   // 2 — Piège de lecture
   {
