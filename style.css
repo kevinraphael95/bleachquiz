@@ -78,7 +78,6 @@ html, body {
   position: fixed; inset: 0; z-index: 10;
   display: none; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: clamp(12px, 3vw, 24px);
   background: transparent;
 }
 .screen.active {
@@ -156,124 +155,160 @@ html, body {
 .btn-jouer:hover  { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--green-dark); }
 .btn-jouer:active { transform: translate(3px, 3px);  box-shadow: 2px 2px 0 var(--green-dark); }
 
-.btn-restart {
-  background: transparent;
-  border: none;
-  color: rgba(255,255,255,0.6);
-  font-family: var(--font-ui);
-  font-size: clamp(13px, 2vw, 16px);
-  cursor: pointer;
-  text-decoration: underline;
-  transition: color 0.15s;
-  position: relative; z-index: 20;
-}
-.btn-restart:hover { color: #fff; }
-
 /* ════════════════════════════════════════
-   ÉCRAN JEU
+   ÉCRAN JEU — LAYOUT IMPOSSIBLE QUIZ
+   Question haut | Réponses milieu | HUD bas
 ════════════════════════════════════════ */
 #screen-game {
-  justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
   padding: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-.game-inner {
+/* HAUT : question */
+.iq-top {
   position: relative; z-index: 1;
-  width: 100%; max-width: 720px;
-  margin: 0 auto;
-  padding: clamp(10px, 2vw, 18px) clamp(12px, 3vw, 22px) clamp(14px, 3vw, 22px);
-  display: flex; flex-direction: column;
-  gap: clamp(8px, 1.5vw, 14px);
-}
-
-/* ── HUD ── */
-.hud {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: clamp(8px, 1.5vw, 14px);
   width: 100%;
-  padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 18px);
-  background: #fff;
-  border: 3px solid var(--navy);
-  border-radius: clamp(12px, 2vw, 16px);
-  box-shadow: var(--shadow-hud);
+  padding: clamp(8px, 1.5vw, 14px) clamp(10px, 2vw, 18px) 0;
   flex-shrink: 0;
 }
-.hud-block { display: flex; align-items: center; gap: 6px; }
 
+/* MILIEU : réponses / mécaniques */
+.iq-mid {
+  position: relative; z-index: 1;
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(8px, 1.5vw, 14px) clamp(10px, 2vw, 18px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.5vw, 12px);
+  overflow-y: auto;
+}
+
+/* BAS : HUD style Impossible Quiz */
+.iq-bot {
+  position: relative; z-index: 1;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.hud-bot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: clamp(6px, 1.2vw, 10px) clamp(12px, 2vw, 20px);
+  background: rgba(0,0,0,0.45);
+  border-top: 3px solid rgba(255,255,255,0.12);
+}
+
+/* Vies */
+.hud-lives {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .hud-heart {
-  width: clamp(22px, 3.5vw, 28px);
-  height: clamp(22px, 3.5vw, 28px);
+  width: clamp(24px, 4vw, 32px);
+  height: clamp(24px, 4vw, 32px);
   transition: transform 0.3s var(--ease-snap), opacity 0.3s;
 }
-.hud-heart svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 4px rgba(200,0,10,0.5)); }
+.hud-heart svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 4px rgba(200,0,10,0.6)); }
 .hud-heart.dead { opacity: 0.18; transform: scale(0.7); }
 .hud-heart.dead svg { filter: none; }
 
-.hud-center { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.hud-qnum {
-  font-family: var(--font-logo);
-  font-size: clamp(16px, 2.5vw, 20px);
-  letter-spacing: 2px; color: var(--navy);
-}
-.hud-progressbar {
-  width: 100%; height: 4px;
-  background: rgba(26,31,74,0.15);
-  border-radius: 2px; overflow: hidden;
-  min-width: clamp(80px, 18vw, 140px);
-}
-.hud-progressbar-fill {
-  height: 100%; width: 0%;
-  background: var(--green-ui);
-  border-radius: 2px;
-  transition: width 0.5s var(--ease-snap);
-}
-.hud-right { flex-direction: column; align-items: flex-end; gap: 4px; }
-.hud-score {
-  font-family: var(--font-logo);
-  font-size: clamp(13px, 2vw, 16px);
-  letter-spacing: 1px; color: var(--navy);
-}
-.hud-skips { display: flex; gap: 3px; }
-.skip-pip {
-  width: clamp(16px, 2.5vw, 20px);
-  height: clamp(16px, 2.5vw, 20px);
-  border-radius: 50%;
-  border: 1.5px solid rgba(26,31,74,0.2);
+/* Bouton recommencer en jeu */
+.btn-ingame-restart {
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: var(--rad-sm);
+  color: rgba(255,255,255,0.7);
+  font-size: clamp(16px, 2.5vw, 22px);
+  width: clamp(32px, 5vw, 40px);
+  height: clamp(32px, 5vw, 40px);
+  cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: clamp(7px, 1.2vw, 9px);
-  color: rgba(26,31,74,0.3); cursor: default;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+.btn-ingame-restart:hover  { background: rgba(255,255,255,0.2); color: #fff; transform: rotate(-15deg); }
+.btn-ingame-restart:active { transform: rotate(-30deg) scale(0.9); }
+
+/* Skips */
+.hud-skips-wrap {
+  display: flex; flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.hud-skips-label {
+  font-family: var(--font-impact);
+  font-size: clamp(8px, 1.2vw, 11px);
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.5);
+}
+.hud-skips {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.skip-pip {
+  width: clamp(18px, 3vw, 24px);
+  height: clamp(18px, 3vw, 24px);
+  border-radius: 4px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(9px, 1.4vw, 12px);
+  color: rgba(255,255,255,0.2);
+  cursor: default;
   transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.15s;
 }
-.skip-pip.on { border-color: var(--green-ok); color: var(--green-ok); cursor: pointer; }
-.skip-pip.on:hover { background: rgba(0,200,100,0.12); transform: scale(1.15); }
+.skip-pip.on {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(245,200,66,0.5);
+}
+.skip-pip.on:hover { background: rgba(245,200,66,0.15); transform: scale(1.2); }
+.skip-extra {
+  font-family: var(--font-impact);
+  font-size: clamp(11px, 1.8vw, 14px);
+  color: var(--gold-bright);
+  margin-left: 3px;
+}
 
 /* ── QUESTION CARD ── */
 .question-card {
   position: relative; width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
   background: #fff;
   border: 3px solid var(--navy);
-  border-radius: clamp(12px, 2vw, 16px);
+  border-radius: clamp(10px, 2vw, 14px);
   box-shadow: var(--shadow-card);
-  padding: clamp(18px, 3vw, 28px) clamp(20px, 4vw, 36px) clamp(16px, 2.5vw, 24px);
-  min-height: clamp(90px, 14vw, 120px);
+  padding: clamp(14px, 2.5vw, 22px) clamp(40px, 6vw, 60px) clamp(12px, 2vw, 18px) clamp(16px, 3vw, 26px);
+  min-height: clamp(70px, 12vw, 100px);
   display: flex; align-items: center; justify-content: center;
-  overflow: hidden; flex-shrink: 0;
+  overflow: hidden;
 }
 .question-number {
-  position: absolute; top: 8px; left: 12px;
+  position: absolute; top: 6px; left: 10px;
   font-family: var(--font-logo);
-  font-size: clamp(36px, 7vw, 52px);
+  font-size: clamp(32px, 6vw, 48px);
   line-height: 1;
   color: rgba(26,31,74,0.06);
   pointer-events: none; user-select: none;
 }
 .question-text {
   font-family: var(--font-logo);
-  font-size: clamp(16px, 3.2vw, 26px);
+  font-size: clamp(15px, 3vw, 24px);
   color: var(--navy); text-align: center;
   line-height: 1.3;
   position: relative; z-index: 1; width: 100%;
@@ -292,19 +327,19 @@ html, body {
 .answers-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(8px, 1.5vw, 12px);
-  width: 100%; flex-shrink: 0;
+  gap: clamp(7px, 1.3vw, 11px);
+  width: 100%;
 }
 .ans-btn {
   background: var(--green-ui);
   border: 3px solid var(--green-dark);
-  border-radius: clamp(10px, 2vw, 14px);
+  border-radius: clamp(8px, 1.5vw, 12px);
   box-shadow: 4px 4px 0 var(--green-dark);
-  padding: clamp(10px, 2vw, 14px) clamp(10px, 2vw, 16px);
+  padding: clamp(9px, 1.8vw, 13px) clamp(8px, 1.5vw, 14px);
   font-family: var(--font-logo);
-  font-size: clamp(13px, 2.5vw, 20px);
+  font-size: clamp(13px, 2.3vw, 19px);
   color: #fff; cursor: pointer;
-  min-height: clamp(56px, 9vw, 72px);
+  min-height: clamp(50px, 8vw, 66px);
   display: flex; align-items: center; justify-content: center;
   text-align: center; line-height: 1.25;
   transition: transform .08s, box-shadow .08s;
@@ -332,7 +367,7 @@ html, body {
 ════════════════════════════════════════ */
 .hidden-field {
   position: relative; width: 100%;
-  height: clamp(150px, 25vw, 200px);
+  height: clamp(130px, 22vw, 180px);
   background: #fff;
   border: 3px solid var(--navy);
   border-radius: var(--rad);
@@ -342,7 +377,7 @@ html, body {
 .hidden-decoy {
   position: absolute;
   font-family: var(--font-impact);
-  font-size: clamp(14px, 2.5vw, 20px);
+  font-size: clamp(13px, 2.3vw, 18px);
   letter-spacing: 2px;
   color: transparent; cursor: pointer;
   padding: 6px 10px;
@@ -351,7 +386,7 @@ html, body {
 .hidden-decoy:hover { color: rgba(204,0,10,0.45); }
 .hidden-correct {
   position: absolute;
-  font-size: clamp(24px, 4.5vw, 36px);
+  font-size: clamp(20px, 4vw, 32px);
   color: transparent; cursor: pointer;
   padding: 8px;
   transition: color 0.15s, transform 0.15s;
@@ -362,11 +397,11 @@ html, body {
   display: flex; flex-wrap: wrap;
   gap: clamp(8px, 1.5vw, 12px);
   justify-content: center;
-  padding: clamp(8px, 1.5vw, 12px) 0;
+  padding: clamp(6px, 1.2vw, 10px) 0;
 }
 .color-swatch {
-  width: clamp(60px, 11vw, 80px);
-  height: clamp(60px, 11vw, 80px);
+  width: clamp(60px, 10vw, 80px);
+  height: clamp(60px, 10vw, 80px);
   border-radius: var(--rad);
   border: 3px solid var(--navy);
   cursor: pointer;
@@ -381,15 +416,15 @@ html, body {
 }
 .color-swatch:hover { transform: scale(1.12) translateY(-2px); box-shadow: 5px 5px 0 var(--navy); }
 
-.drag-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.drag-list { display: flex; flex-direction: column; gap: 7px; width: 100%; }
 .drag-item {
   display: flex; align-items: center; gap: 12px;
-  padding: clamp(9px, 1.5vw, 12px) clamp(12px, 2vw, 16px);
+  padding: clamp(8px, 1.3vw, 11px) clamp(10px, 1.8vw, 14px);
   background: #fff;
   border: 2px solid var(--navy);
   border-radius: var(--rad-sm);
   font-family: var(--font-impact);
-  font-size: clamp(14px, 2.5vw, 18px);
+  font-size: clamp(13px, 2.3vw, 17px);
   letter-spacing: 2px; color: var(--navy);
   cursor: grab;
   box-shadow: 2px 2px 0 var(--navy);
@@ -401,10 +436,10 @@ html, body {
 .drag-handle { color: rgba(26,31,74,0.3); font-size: 22px; line-height: 1; flex-shrink: 0; }
 
 .drag-submit {
-  margin-top: 10px; width: 100%;
-  padding: clamp(9px, 1.5vw, 12px);
+  margin-top: 8px; width: 100%;
+  padding: clamp(8px, 1.3vw, 11px);
   font-family: var(--font-logo);
-  font-size: clamp(18px, 3vw, 22px);
+  font-size: clamp(16px, 2.8vw, 20px);
   letter-spacing: 2px;
   color: var(--navy); background: var(--gold-bright);
   border: 3px solid var(--navy);
@@ -418,18 +453,18 @@ html, body {
 
 .slider-wrap {
   width: 100%;
-  padding: clamp(14px, 2.5vw, 20px) clamp(16px, 3vw, 24px);
+  padding: clamp(12px, 2vw, 18px) clamp(14px, 2.5vw, 22px);
   background: #fff;
   border: 3px solid var(--navy);
   border-radius: var(--rad);
   box-shadow: var(--shadow-card);
   display: flex; flex-direction: column;
   align-items: center;
-  gap: clamp(10px, 2vw, 14px);
+  gap: clamp(8px, 1.5vw, 12px);
 }
 .slider-display {
   font-family: var(--font-logo);
-  font-size: clamp(52px, 11vw, 72px);
+  font-size: clamp(44px, 9vw, 66px);
   color: var(--red); line-height: 1;
 }
 input[type="range"].slider-ctrl {
@@ -438,9 +473,9 @@ input[type="range"].slider-ctrl {
   background: transparent;
 }
 .slider-submit {
-  padding: clamp(8px, 1.5vw, 10px) clamp(28px, 5vw, 40px);
+  padding: clamp(7px, 1.3vw, 10px) clamp(24px, 4vw, 36px);
   font-family: var(--font-logo);
-  font-size: clamp(18px, 3vw, 22px);
+  font-size: clamp(16px, 2.8vw, 20px);
   letter-spacing: 2px; color: #fff;
   background: var(--red);
   border: 3px solid var(--navy);
@@ -454,7 +489,7 @@ input[type="range"].slider-ctrl {
 
 .avoid-field {
   position: relative; width: 100%;
-  height: clamp(140px, 22vw, 180px);
+  height: clamp(120px, 20vw, 160px);
   background: #fff;
   border: 3px solid var(--navy);
   border-radius: var(--rad);
@@ -463,9 +498,9 @@ input[type="range"].slider-ctrl {
 }
 .avoid-target {
   position: absolute;
-  padding: clamp(7px, 1.3vw, 10px) clamp(14px, 2.5vw, 22px);
+  padding: clamp(6px, 1.1vw, 9px) clamp(12px, 2.2vw, 20px);
   font-family: var(--font-impact);
-  font-size: clamp(14px, 2.5vw, 18px);
+  font-size: clamp(13px, 2.3vw, 17px);
   letter-spacing: 2px;
   background: #f0fff4;
   border: 2px solid var(--green-ok);
@@ -475,9 +510,9 @@ input[type="range"].slider-ctrl {
 }
 .avoid-trap {
   position: absolute;
-  padding: clamp(7px, 1.3vw, 10px) clamp(12px, 2vw, 18px);
+  padding: clamp(6px, 1.1vw, 9px) clamp(10px, 1.8vw, 16px);
   font-family: var(--font-impact);
-  font-size: clamp(12px, 2vw, 16px);
+  font-size: clamp(11px, 1.8vw, 15px);
   letter-spacing: 1px;
   background: #fff0f0;
   border: 2px solid var(--red);
@@ -488,14 +523,14 @@ input[type="range"].slider-ctrl {
 
 .word-cluster {
   display: flex; flex-wrap: wrap;
-  gap: clamp(7px, 1.3vw, 10px);
+  gap: clamp(6px, 1.2vw, 9px);
   justify-content: center;
-  padding: clamp(6px, 1.2vw, 8px) 0;
+  padding: clamp(4px, 0.8vw, 6px) 0;
 }
 .wc-btn {
-  padding: clamp(8px, 1.3vw, 10px) clamp(14px, 2.5vw, 22px);
+  padding: clamp(7px, 1.2vw, 9px) clamp(12px, 2.2vw, 20px);
   font-family: var(--font-logo);
-  font-size: clamp(13px, 2.2vw, 16px);
+  font-size: clamp(12px, 2vw, 15px);
   color: var(--navy); background: #fff;
   border: 2px solid var(--navy);
   border-radius: 999px;
@@ -507,15 +542,15 @@ input[type="range"].slider-ctrl {
 .wc-btn.selected { background: #e0f8e0; border-color: var(--green-dark); box-shadow: 2px 2px 0 var(--green-dark); color: var(--green-dark); }
 
 /* ════════════════════════════════════════
-   TOAST
+   TOASTS
 ════════════════════════════════════════ */
 .toast {
-  position: fixed; top: 50%; left: 50%;
+  position: fixed; top: 40%; left: 50%;
   transform: translate(-50%,-50%) scale(0.75);
   z-index: 500; pointer-events: none; opacity: 0;
   display: flex; flex-direction: column;
   align-items: center; gap: 4px;
-  padding: clamp(14px, 2.5vw, 20px) clamp(28px, 6vw, 44px);
+  padding: clamp(12px, 2vw, 18px) clamp(24px, 5vw, 40px);
   background: var(--paper);
   border: 4px solid var(--red-bright);
   border-radius: var(--rad);
@@ -525,13 +560,25 @@ input[type="range"].slider-ctrl {
 .toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 .toast-wrong {
   font-family: var(--font-title);
-  font-size: clamp(32px, 7vw, 44px);
+  font-size: clamp(28px, 6vw, 40px);
   color: var(--red-bright); letter-spacing: 3px; line-height: 1;
 }
 .toast-life {
   font-family: var(--font-impact);
-  font-size: clamp(14px, 2.5vw, 18px);
+  font-size: clamp(13px, 2.2vw, 16px);
   letter-spacing: 4px; color: var(--navy);
+}
+
+/* Toast skip gagné */
+.toast--skip {
+  border-color: var(--gold-bright);
+  background: #fffbe6;
+  top: 30%;
+}
+.toast-skip-text {
+  font-family: var(--font-title);
+  font-size: clamp(22px, 4.5vw, 32px);
+  color: var(--gold-dim); letter-spacing: 2px; line-height: 1;
 }
 
 /* ════════════════════════════════════════
@@ -552,11 +599,11 @@ input[type="range"].slider-ctrl {
 @keyframes fade-in-overlay { from { opacity: 0; } to { opacity: 1; } }
 
 .overlay-inner {
-  position: relative; width: 100%; max-width: 480px;
+  position: relative; width: 100%; max-width: 420px;
   display: flex; flex-direction: column;
   align-items: center;
-  gap: clamp(8px, 1.5vw, 12px);
-  padding: clamp(28px, 5vw, 40px) clamp(20px, 4vw, 36px);
+  gap: clamp(8px, 1.5vw, 14px);
+  padding: clamp(24px, 5vw, 38px) clamp(20px, 4vw, 36px);
   background: #fff;
   border-radius: var(--rad-lg);
   text-align: center; overflow: hidden;
@@ -573,7 +620,7 @@ input[type="range"].slider-ctrl {
 
 .overlay-title {
   font-family: var(--font-title);
-  font-size: clamp(48px, 11vw, 80px);
+  font-size: clamp(44px, 10vw, 76px);
   letter-spacing: 4px;
   color: var(--red-bright); line-height: 0.9;
   text-shadow:
@@ -598,32 +645,6 @@ input[type="range"].slider-ctrl {
   color: rgba(26,31,74,0.6);
   position: relative; z-index: 1;
 }
-.overlay-stats {
-  display: flex; gap: clamp(8px, 1.5vw, 12px);
-  flex-wrap: wrap; justify-content: center;
-  position: relative; z-index: 1;
-}
-.overlay-stat {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 2px;
-  padding: clamp(7px, 1.3vw, 10px) clamp(14px, 2.5vw, 20px);
-  background: #f5f0e8;
-  border: 2px solid var(--navy);
-  border-radius: var(--rad-sm);
-  box-shadow: 2px 2px 0 var(--navy);
-  min-width: clamp(66px, 12vw, 80px);
-}
-.overlay-stat-val {
-  font-family: var(--font-title);
-  font-size: clamp(26px, 5vw, 34px);
-  color: var(--navy); line-height: 1;
-}
-.overlay-stat-lbl {
-  font-family: var(--font-impact);
-  font-size: clamp(9px, 1.5vw, 11px);
-  letter-spacing: 2px;
-  color: rgba(26,31,74,0.5);
-}
 
 .win-rank {
   font-family: var(--font-impact);
@@ -635,10 +656,11 @@ input[type="range"].slider-ctrl {
   background: rgba(212,160,23,0.08);
   position: relative; z-index: 1;
 }
+
 .btn-overlay {
-  padding: clamp(10px, 2vw, 14px) clamp(36px, 7vw, 52px);
+  padding: clamp(10px, 2vw, 14px) clamp(32px, 7vw, 50px);
   font-family: var(--font-title);
-  font-size: clamp(24px, 5vw, 30px);
+  font-size: clamp(22px, 4.5vw, 28px);
   letter-spacing: 3px; color: #fff;
   background: var(--red);
   border: 3px solid var(--navy);
@@ -653,21 +675,13 @@ input[type="range"].slider-ctrl {
 .btn-overlay:active { transform: translate(2px, 2px);  box-shadow: 2px 2px 0 var(--navy); }
 
 /* ════════════════════════════════════════
-   UTILITAIRES
+   RESPONSIVE
 ════════════════════════════════════════ */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 480px) {
   .answers-grid { grid-template-columns: 1fr; }
-  .hud { gap: 6px; }
-  .question-card { padding: 16px 14px; }
 }
-@media (max-height: 650px) {
-  .game-inner { gap: 6px; padding: 8px 14px 12px; }
-  .question-card { min-height: 72px; padding: 12px 18px; }
-  .ans-btn { min-height: 48px; }
-  .logo-bleach { font-size: clamp(44px, 12vw, 90px); }
+@media (max-height: 600px) {
+  .iq-top { padding-top: 6px; }
+  .question-card { min-height: 60px; padding: 10px 14px; }
+  .ans-btn { min-height: 42px; }
 }
