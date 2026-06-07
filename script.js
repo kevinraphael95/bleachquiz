@@ -527,6 +527,20 @@ function renderSecretWordQuestion(q) {
       qText.appendChild(secret);
     }
   });
+
+  // Faux boutons pour noyer le poisson
+  const fakes = q.fakeAnswers || ["10", "5", "Aucune", "???"];
+  fakes.forEach(text => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.textContent = text;
+    btn.addEventListener('click', () => {
+      if (STATE.locked) return;
+      sfxClick();
+      onWrong(btn);
+    });
+    answersGrid.appendChild(btn);
+  });
 }
 
 function renderHidden(q) {
