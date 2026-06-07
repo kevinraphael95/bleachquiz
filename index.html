@@ -29,7 +29,6 @@
         <div class="logo-quiz">QUIZ</div>
       </div>
       <button class="btn-jouer" id="btn-start">JOUER !</button>
-      <button class="btn-restart" id="btn-restart" hidden>↺ Recommencer</button>
     </div>
   </section>
 
@@ -42,32 +41,38 @@
       <div class="impact-line"></div>
       <div class="impact-line"></div>
     </div>
-    <div class="game-inner">
 
-      <header class="hud" role="status" aria-live="polite">
-        <div class="hud-block hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
-        <div class="hud-block hud-center">
-          <div class="hud-qnum" id="hud-qnum" aria-label="Numéro de question">Q.1</div>
-          <div class="hud-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="hud-progressbar-fill" id="hud-prog"></div>
-          </div>
-        </div>
-        <div class="hud-block hud-right">
-          <div class="hud-score" id="hud-score" aria-label="Score">0 PTS</div>
-          <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
-        </div>
-      </header>
-
+    <!-- QUESTION (haut) -->
+    <div class="iq-top">
       <div class="question-card" id="question-card">
         <div class="question-number" id="q-num" aria-hidden="true">01</div>
         <div class="question-text" id="q-text" role="heading" aria-level="2"></div>
       </div>
-
-      <div class="special-zone" id="special-zone" hidden></div>
-
-      <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
-
     </div>
+
+    <!-- RÉPONSES (milieu) -->
+    <div class="iq-mid">
+      <div class="special-zone" id="special-zone" hidden></div>
+      <div class="answers-grid" id="answers-grid" role="group" aria-label="Choix de réponses"></div>
+    </div>
+
+    <!-- HUD (bas) — style Impossible Quiz -->
+    <div class="iq-bot">
+      <div class="hud-bot">
+        <!-- Vies -->
+        <div class="hud-lives" id="hud-lives" aria-label="Vies restantes"></div>
+
+        <!-- Bouton recommencer -->
+        <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
+
+        <!-- Skips (flèches) -->
+        <div class="hud-skips-wrap">
+          <div class="hud-skips-label">SKIPS</div>
+          <div class="hud-skips" id="hud-skips" aria-label="Skips disponibles"></div>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- OVERLAY GAME OVER -->
@@ -75,8 +80,7 @@
     <div class="overlay-inner overlay-inner--red">
       <div class="overlay-impact" aria-hidden="true"></div>
       <h1 class="overlay-title" id="go-title">GAME<br>OVER</h1>
-      <p class="overlay-sub" id="go-sub">Tu t'es arrêté à la question&nbsp;<strong id="go-qnum">?</strong></p>
-      <div class="overlay-stats" id="go-stats"></div>
+      <p class="overlay-sub" id="go-sub">Arrêté à la question&nbsp;<strong id="go-qnum">?</strong></p>
       <button class="btn-overlay" id="btn-retry-go">RÉESSAYER</button>
     </div>
   </div>
@@ -87,7 +91,6 @@
       <div class="overlay-impact overlay-impact--gold" aria-hidden="true"></div>
       <h1 class="overlay-title overlay-title--gold" id="win-title">BRAVO !</h1>
       <p class="overlay-sub">Tu as survécu. Même Aizen est impressionné.</p>
-      <div class="overlay-stats" id="win-stats"></div>
       <div class="win-rank" id="win-rank"></div>
       <button class="btn-overlay btn-overlay--gold" id="btn-retry-win">REJOUER</button>
     </div>
@@ -97,6 +100,11 @@
   <div class="toast" id="toast" aria-live="assertive" aria-atomic="true">
     <span class="toast-wrong">✗ FAUX !</span>
     <span class="toast-life">−1 VIE</span>
+  </div>
+
+  <!-- TOAST SKIP GAGNÉ -->
+  <div class="toast toast--skip" id="toast-skip" aria-live="assertive" aria-atomic="true">
+    <span class="toast-skip-text">+1 SKIP ⚡</span>
   </div>
 
   <script src="questions.js"></script>
