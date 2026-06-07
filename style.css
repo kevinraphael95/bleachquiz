@@ -319,11 +319,9 @@ html, body {
   position: relative; z-index: 1; width: 100%;
 }
 .q-secret {
-  color: var(--red-bright); cursor: pointer;
-  display: inline; padding: 0 2px;
-  border-bottom: 2px dashed var(--red-bright);
+  color: var(--navy); cursor: pointer;
+  display: inline;
   transition: opacity 0.2s;
-  font-weight: bold;
 }
 .q-secret:hover { opacity: 0.7; }
 
