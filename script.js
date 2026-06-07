@@ -220,16 +220,8 @@ function startGame(fresh = false) {
    HUD
 ────────────────────────────── */
 function updateHUD() {
-  // Vies
-  hudLives.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
-    const heart = document.createElement('div');
-    heart.className = 'hud-heart' + (i >= STATE.lives ? ' dead' : '');
-    heart.innerHTML = `<svg viewBox="0 0 24 24" fill="${i < STATE.lives ? '#c8000a' : '#333'}">
-      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-    </svg>`;
-    hudLives.appendChild(heart);
-  }
+  // Vies — style IQ : "LIVES: X" (X en vert)
+  hudLives.innerHTML = `<span class="hud-lives-count">${STATE.lives}</span>`;
 
   // Skips (flèches) — affiche jusqu'à 5 max visuellement, label avec nombre
   hudSkips.innerHTML = '';
@@ -526,20 +518,6 @@ function renderSecretWordQuestion(q) {
       });
       qText.appendChild(secret);
     }
-  });
-
-  // Faux boutons pour noyer le poisson
-  const fakes = q.fakeAnswers || ["10", "5", "Aucune", "???"];
-  fakes.forEach(text => {
-    const btn = document.createElement('button');
-    btn.className = 'ans-btn';
-    btn.textContent = text;
-    btn.addEventListener('click', () => {
-      if (STATE.locked) return;
-      sfxClick();
-      onWrong(btn);
-    });
-    answersGrid.appendChild(btn);
   });
 }
 
