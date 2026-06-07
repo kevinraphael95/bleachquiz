@@ -69,6 +69,7 @@ const QUESTIONS = [
     text: "Combien de divisions y a-t-il dans le Gotei 13 ? Clique sur la réponse dans la question.",
     type: "secret_word",
     secretWord: "13",
+    fakeAnswers: ["6", "12", "20", "46"],
     bonusSkip: true,
   },
   // 8 — Mot caché cliquable dans la question
