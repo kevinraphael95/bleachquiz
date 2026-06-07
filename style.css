@@ -13,7 +13,7 @@
 
 html, body {
   width: 100%; height: 100%; overflow: hidden;
-  background: #fff;
+  background: #5b7fe8;
   font-family: var(--font-iq);
   -webkit-font-smoothing: antialiased;
   user-select: none;
@@ -27,15 +27,21 @@ html, body {
   position: fixed; inset: 0; z-index: 10;
   display: none; flex-direction: column;
   align-items: center; justify-content: center;
-  background: #fff;
+  background: transparent;
 }
 .screen.active { display: flex; }
 
 /* ════════════════════════
    ÉCRAN TITRE
 ════════════════════════ */
-.bg-lines { display: none; }
-#bg-canvas { display: none; }
+#bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.6; }
+.bg-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.impact-line { position: absolute; top: 50%; left: 50%; width: 300%; height: 1px; background: linear-gradient(90deg, transparent, rgba(200,0,10,0.12), transparent); transform-origin: left center; }
+.impact-line:nth-child(1) { transform: rotate(-25deg) translate(-50%,-50%); }
+.impact-line:nth-child(2) { transform: rotate(-12deg) translate(-50%,-50%); }
+.impact-line:nth-child(3) { transform: rotate(0deg) translate(-50%,-50%); }
+.impact-line:nth-child(4) { transform: rotate(12deg) translate(-50%,-50%); }
+.impact-line:nth-child(5) { transform: rotate(25deg) translate(-50%,-50%); }
 
 .title-content {
   display: flex; flex-direction: column;
@@ -92,22 +98,26 @@ html, body {
   justify-content: flex-start;
   align-items: stretch;
   padding: 0;
-  background: #fff;
+  background: transparent;
+  position: relative; z-index: 1;
 }
 
 /* ── Question ── */
 .iq-top {
   flex-shrink: 0;
-  padding: clamp(14px,2.5vw,26px) clamp(20px,4vw,50px) clamp(8px,1.5vw,16px);
+  padding: clamp(8px,1.5vw,14px) clamp(20px,4vw,50px) clamp(4px,0.8vw,8px);
 }
 
 .question-card {
   position: relative;
   width: 100%; max-width: 860px; margin: 0 auto;
-  background: #fff;
+  background: rgba(255,255,255,0.95);
+  border: 3px solid var(--iq-blue);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
   display: flex; align-items: center;
   padding-left: clamp(64px, 9vw, 100px);
-  min-height: clamp(70px, 14vw, 130px);
+  min-height: clamp(55px, 10vw, 90px);
 }
 
 /* Cercle rouge numéro — coin haut gauche absolu */
@@ -145,10 +155,11 @@ html, body {
 .iq-mid {
   flex: 1;
   width: 100%; max-width: 860px; margin: 0 auto;
-  padding: clamp(8px,1.5vw,16px) clamp(20px,4vw,50px);
+  padding: clamp(6px,1vw,10px) clamp(20px,4vw,50px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: clamp(10px,1.8vw,16px);
+  gap: clamp(8px,1.4vw,12px);
+  max-height: calc(100vh - 280px);
 }
 
 .special-zone { width: 100%; }
@@ -156,7 +167,7 @@ html, body {
 .answers-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(10px,1.8vw,16px);
+  gap: clamp(8px,1.4vw,12px);
   width: 100%;
 }
 
@@ -172,7 +183,7 @@ html, body {
   font-size: clamp(16px,2.8vw,26px);
   color: #000;
   cursor: pointer;
-  min-height: clamp(60px,10vw,90px);
+  min-height: clamp(52px,8vw,76px);
   display: flex; align-items: center; justify-content: center;
   text-align: center; line-height: 1.2;
   transition: filter .1s;
@@ -204,8 +215,8 @@ html, body {
 .iq-bot {
   flex-shrink: 0;
   width: 100%;
-  border-top: 2px solid #ddd;
-  background: #fff;
+  border-top: none;
+  background: transparent;
 }
 
 .hud-bot {
@@ -213,7 +224,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   width: 100%; max-width: 860px; margin: 0 auto;
-  padding: clamp(8px,1.5vw,14px) clamp(20px,4vw,50px);
+  padding: clamp(5px,0.8vw,9px) clamp(20px,4vw,50px);
   gap: 12px;
 }
 
