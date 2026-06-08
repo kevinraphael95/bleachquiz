@@ -37,34 +37,28 @@ function sfxCorrect() {
   playTone(659, 'square', 0.08, 0.15, 0.09);
   playTone(784, 'square', 0.15, 0.15, 0.18);
 }
-
 function sfxWrong() {
   playTone(220, 'sawtooth', 0.12, 0.2);
   playTone(165, 'sawtooth', 0.18, 0.2, 0.1);
 }
-
 function sfxSkipGained() {
   playTone(880, 'sine', 0.1, 0.12);
   playTone(1100, 'sine', 0.12, 0.12, 0.12);
 }
-
 function sfxSkipUsed() {
   playTone(440, 'sine', 0.08, 0.1);
   playTone(330, 'sine', 0.1, 0.1, 0.09);
 }
-
 function sfxGameOver() {
   playTone(440, 'sawtooth', 0.2, 0.25);
   playTone(330, 'sawtooth', 0.2, 0.25, 0.2);
   playTone(220, 'sawtooth', 0.35, 0.25, 0.4);
 }
-
 function sfxWin() {
   [0, 0.1, 0.2, 0.35].forEach((t, i) => {
     playTone([523, 659, 784, 1047][i], 'square', 0.15, 0.14, t);
   });
 }
-
 function sfxClick() {
   playTone(600, 'sine', 0.04, 0.08);
 }
@@ -75,7 +69,7 @@ function sfxClick() {
 const STATE = {
   currentQ: 0,
   lives: 3,
-  skips: 0,        // commence à 0
+  skips: 0,
   locked: false,
 };
 
@@ -162,19 +156,19 @@ function clearProgress() {
 ────────────────────────────── */
 const $ = id => document.getElementById(id);
 
-const screenTitle   = $('screen-title');
-const screenGame    = $('screen-game');
-const hudLives      = $('hud-lives');
-const hudSkips      = $('hud-skips');
-const qNum          = $('q-num');
-const qText         = $('q-text');
-const answersGrid   = $('answers-grid');
-const specialZone   = $('special-zone');
-const toast         = $('toast');
-const toastSkip     = $('toast-skip');
-const overlayGO     = $('overlay-gameover');
-const overlayWin    = $('overlay-win');
-const btnStart      = $('btn-start');
+const screenTitle      = $('screen-title');
+const screenGame       = $('screen-game');
+const hudLives         = $('hud-lives');
+const hudSkips         = $('hud-skips');
+const qNum             = $('q-num');
+const qText            = $('q-text');
+const answersGrid      = $('answers-grid');
+const specialZone      = $('special-zone');
+const toast            = $('toast');
+const toastSkip        = $('toast-skip');
+const overlayGO        = $('overlay-gameover');
+const overlayWin       = $('overlay-win');
+const btnStart         = $('btn-start');
 const btnIngameRestart = $('btn-ingame-restart');
 
 /* ──────────────────────────────
@@ -220,27 +214,30 @@ function startGame(fresh = false) {
    HUD
 ────────────────────────────── */
 function updateHUD() {
-  // Vies — style IQ : "LIVES: X" (X en vert)
   hudLives.innerHTML = `<span class="hud-lives-count">${STATE.lives}</span>`;
 
-  // Skips (flèches) — affiche jusqu'à 5 max visuellement, label avec nombre
-  hudSkips.innerHTML = '';
-  const displayCount = Math.min(STATE.skips, 5);
-  for (let i = 0; i < 5; i++) {
+  const MAX_SKIPS = 5;
+  const displayCount = Math.min(STATE.skips, MAX_SKIPS);
+  const pct = Math.round((displayCount / MAX_SKIPS) * 100);
+
+  hudSkips.innerHTML = `
+    <div class="skip-bar-wrap">
+      <div class="skip-pips" id="skip-pips-inner"></div>
+      <div class="skip-bar-track" style="width:${Math.max(60, MAX_SKIPS * 22)}px">
+        <div class="skip-bar-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+    ${STATE.skips > MAX_SKIPS ? `<span class="skip-extra">x${STATE.skips}</span>` : ''}
+  `;
+
+  const pipsEl = document.getElementById('skip-pips-inner');
+  for (let i = 0; i < MAX_SKIPS; i++) {
     const pip = document.createElement('div');
     const active = i < displayCount;
     pip.className = 'skip-pip' + (active ? ' on' : '');
-    pip.textContent = '➤';
     pip.title = active ? 'Utiliser un skip' : 'Skip épuisé';
     if (active) pip.addEventListener('click', useSkip);
-    hudSkips.appendChild(pip);
-  }
-  // Si plus de 5, afficher le nombre
-  if (STATE.skips > 5) {
-    const extra = document.createElement('span');
-    extra.className = 'skip-extra';
-    extra.textContent = `x${STATE.skips}`;
-    hudSkips.appendChild(extra);
+    pipsEl.appendChild(pip);
   }
 }
 
@@ -283,13 +280,25 @@ function loadQuestion() {
 }
 
 /* ──────────────────────────────
-   BONUS SKIP
+   BONUS SKIP — toast centré
 ────────────────────────────── */
 function grantBonusSkip() {
   STATE.skips++;
   updateHUD();
   saveProgress();
   sfxSkipGained();
+
+  // Positionner le toast au centre de la zone de réponses
+  const midEl = document.querySelector('.iq-mid');
+  if (midEl) {
+    const rect = midEl.getBoundingClientRect();
+    const centerY = rect.top + rect.height / 2;
+    const pct = (centerY / window.innerHeight) * 100;
+    toastSkip.style.top = pct + '%';
+  } else {
+    toastSkip.style.top = '50%';
+  }
+
   toastSkip.classList.add('show');
   setTimeout(() => toastSkip.classList.remove('show'), 1200);
 }
@@ -513,7 +522,7 @@ function renderSecretWordQuestion(q) {
       secret.addEventListener('click', () => {
         if (STATE.locked) return;
         sfxClick();
-        secret.style.color = 'var(--green-ok)';
+        secret.style.color = 'green';
         onCorrect();
       });
       qText.appendChild(secret);
@@ -554,7 +563,7 @@ function renderHidden(q) {
   correct.addEventListener('click', () => {
     if (STATE.locked) return;
     sfxClick();
-    correct.style.color = 'var(--green-ok)';
+    correct.style.color = 'green';
     onCorrect();
   });
   field.appendChild(correct);
