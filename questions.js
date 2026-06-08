@@ -117,9 +117,9 @@ const QUESTIONS = [
   // 2 — Piège de lecture
   {
     id: 2,
-    text: "Quel est le vrai nom du Zanpakutō de Rukia ?",
+    text: "Qui gagnerai un combat en free for all ?",
     type: "classic",
-    answers: ["Sode no Shirayuki", "Shirofuki", "Hyōrinmaru", "Zangetsu"],
+    answers: ["Hanataro", "Unohana", "Bazz B", "Starrk"],
     correct: 0,
     bonusSkip: true,
   },
@@ -132,13 +132,13 @@ const QUESTIONS = [
   // 5 — Piège logique absurde
   {
     id: 5,
-    text: "Qu'est-ce qu'un Shinigami fait quand il dort ?",
+    text: "Qu'y a-t-il écrit dans la première bulle de la deuxième case de la page 99 du tome 32 ?",
     type: "classic",
     answers: [
-      "Il purifie les âmes en rêve",
-      "Il n'a pas besoin de dormir",
-      "Il retourne à la Soul Society",
-      "La même chose que toi en ce moment"
+      "BOUUH...",
+      "J'en ai pour une seconde",
+      "Bien sûr que non   .",
+      "C'est bien toi qui a dit qu'il était gentil!"
     ],
     correct: 3,
     bonusSkip: true,
@@ -146,11 +146,11 @@ const QUESTIONS = [
   // 6 — Couleurs
   {
     id: 6,
-    text: "Quelle est la couleur du Reiatsu d'Aizen après sa transformation avec l'Hōgyoku ?",
+    text: "Quelle est la couleur du Hōgyoku ?",
     type: "colors",
     swatches: [
       { label: "ROUGE",  color: "#c8000a" },
-      { label: "VIOLET", color: "#8b00ff" },
+      { label: "HOGYOKU", color: "#8b00ff" },
       { label: "OR",     color: "#d4a017" },
       { label: "BLANC",  color: "#e8e8e8" }
     ],
@@ -168,10 +168,10 @@ const QUESTIONS = [
   // 8 — Mot caché cliquable dans la question
   {
     id: 8,
-    text: "Clique sur le mot BANKAI dans cette phrase pour répondre : « Seuls les fools cliquent sur BANKAI »",
+    text: "Clique sur le mot BANKAI",
     type: "secret_word",
     secretWord: "BANKAI",
-    fakeAnswers: ["Shikai", "Bankai", "Reiatsu", "Zanpakutō"],
+    fakeAnswers: ["Shikai", "Bankai", "Fullbring", "Zanpakutō"],
   },
   // 9 — Drag & drop ordre
   {
@@ -190,10 +190,10 @@ const QUESTIONS = [
     text: "Quelle est la technique la plus forte d'Ichigo dans Bleach ?",
     type: "classic",
     answers: [
-      "Getsuga Tenshō",
       "Mugetsu",
-      "True Bankai Slash",
-      "Appuyer sur Ignorer"
+      "Getsuga Tenshō",
+      "Getsuga Tenshō Noir",
+      "Getsuga Tenshō x 2 aka Getsuga Jūjishō"
     ],
     correct: 3,
   },
@@ -209,9 +209,9 @@ const QUESTIONS = [
   // 13 — Classique piège visuel
   {
     id: 13,
-    text: "Qui dit « Aizen-sama » dans Bleach ?",
+    text: "Qui est le plus grand ennemi de Bleach ?",
     type: "classic",
-    answers: ["Gin Ichimaru", "Tōsen Kaname", "Tout le monde ci-dessus", "Grimmjow"],
+    answers: ["Aizen", "Yhwach", "Jump", "Tokinada"],
     correct: 2,
     bonusSkip: true,
   },
