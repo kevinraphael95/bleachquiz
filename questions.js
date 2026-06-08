@@ -2,6 +2,110 @@
    THAT BLEACH QUIZ — questions.js
 ════════════════════════════════════════════════════ */
 
+/* ──────────────────────────────
+   POOLS ALÉATOIRES
+────────────────────────────── */
+
+const ESPADA_POOL = [
+  { name: "Coyote Starrk",          numero: 1 },
+  { name: "Baraggan Louisenbairn",   numero: 2 },
+  { name: "Tia Harribel",            numero: 3 },
+  { name: "Ulquiorra Cifer",         numero: 4 },
+  { name: "Nnoitra Gilga",           numero: 5 },
+  { name: "Grimmjow Jaegerjaquez",   numero: 6 },
+  { name: "Zommari Rureaux",         numero: 7 },
+  { name: "Szayelaporro Granz",      numero: 8 },
+  { name: "Aaroniero Arruruerie",    numero: 9 },
+  { name: "Yammy Llargo",            numero: 0 },
+];
+
+const DEATH_POOL = [
+  { victim: "Kaien Shiba",             killer: "Rukia",        wrong: ["Ichigo",    "Aizen",     "Gin Ichimaru"] },
+  { victim: "Yamamoto",                killer: "Yhwach",       wrong: ["Aizen",     "Ichigo",    "Ulquiorra"]   },
+  { victim: "Grand Fisher",            killer: "Isshin",       wrong: ["Ichigo",    "Rukia",     "Urahara"]     },
+  { victim: "Ulquiorra",               killer: "Ichigo",       wrong: ["Orihime",   "Uryū",      "Grimmjow"]    },
+  { victim: "Gin Ichimaru",            killer: "Aizen",        wrong: ["Rangiku",   "Ichigo",    "Tōsen"]       },
+  { victim: "Nnoitra Gilga",           killer: "Kenpachi",     wrong: ["Ichigo",    "Byakuya",   "Hitsugaya"]   },
+  { victim: "Szayelaporro Granz",      killer: "Mayuri",       wrong: ["Uryū",      "Renji",     "Kenpachi"]    },
+  { victim: "Baraggan",                killer: "Hachi",        wrong: ["Soi Fon",   "Yoruichi",  "Urahara"]     },
+  { victim: "Zommari Rureaux",         killer: "Byakuya",      wrong: ["Renji",     "Rukia",     "Hitsugaya"]   },
+  { victim: "Coyote Starrk",          killer: "Shunsui",      wrong: ["Ukitake",   "Yamamoto",  "Ichigo"]      },
+  { victim: "Pesche et Dondochakka",   killer: "Nnoitra",      wrong: ["Grimmjow",  "Ulquiorra", "Tesla"]       },
+];
+
+const SHIKAI_POOL = [
+  { captain: "Byakuya Kuchiki",          shikai: "Senbonzakura",      wrong: ["Hyōrinmaru",    "Ryūjin Jakka",      "Wabisuke"]         },
+  { captain: "Tōshirō Hitsugaya",        shikai: "Hyōrinmaru",        wrong: ["Senbonzakura",  "Zangetsu",          "Ryūjin Jakka"]     },
+  { captain: "Yamamoto",                 shikai: "Ryūjin Jakka",      wrong: ["Hyōrinmaru",    "Senbonzakura",      "Gegetsuburi"]      },
+  { captain: "Kenpachi Zaraki",          shikai: "Nozarashi",         wrong: ["Senbonzakura",  "Ryūjin Jakka",      "Hyōrinmaru"]      },
+  { captain: "Mayuri Kurotsuchi",        shikai: "Ashisogi Jizō",     wrong: ["Senbonzakura",  "Wabisuke",          "Gegetsuburi"]      },
+  { captain: "Shunsui Kyōraku",          shikai: "Katen Kyōkotsu",    wrong: ["Senbonzakura",  "Suzumebachi",       "Wabisuke"]         },
+  { captain: "Jūshirō Ukitake",          shikai: "Sōgyo no Kotowari", wrong: ["Senbonzakura",  "Ryūjin Jakka",      "Suzumebachi"]      },
+  { captain: "Shinji Hirako",            shikai: "Sakanade",          wrong: ["Senbonzakura",  "Gegetsuburi",       "Wabisuke"]         },
+  { captain: "Sajin Komamura",           shikai: "Tenken",            wrong: ["Senbonzakura",  "Ryūjin Jakka",      "Gegetsuburi"]      },
+  { captain: "Kaname Tōsen",             shikai: "Suzumushi",         wrong: ["Senbonzakura",  "Wabisuke",          "Gegetsuburi"]      },
+  { captain: "Retsu Unohana",            shikai: "Minazuki",          wrong: ["Senbonzakura",  "Ashisogi Jizō",     "Sōgyo no Kotowari"]},
+  { captain: "Kisuke Urahara",           shikai: "Benihime",          wrong: ["Senbonzakura",  "Zangetsu",          "Wabisuke"]         },
+  { captain: "Yoruichi Shihōin",         shikai: "Shunko (pas de zanpakutō)", wrong: ["Tenken", "Benihime",         "Minazuki"]         },
+  { captain: "Renji Abarai",             shikai: "Zabimaru",          wrong: ["Senbonzakura",  "Wabisuke",          "Gegetsuburi"]      },
+  { captain: "Rangiku Matsumoto",        shikai: "Haineko",           wrong: ["Senbonzakura",  "Zangetsu",          "Wabisuke"]         },
+  { captain: "Love Aikawa",              shikai: "Tengumaru",         wrong: ["Sakanade",      "Gegetsuburi",       "Wabisuke"]         },
+];
+
+/* ──────────────────────────────
+   UTILITAIRES
+────────────────────────────── */
+function _pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function _shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+/* ──────────────────────────────
+   GÉNÉRATEURS DE QUESTIONS
+────────────────────────────── */
+function makeEspadaQ(id, opts = {}) {
+  const pick = _pick(ESPADA_POOL);
+  return {
+    id,
+    text: `Quel est le numéro d'Espada de ${pick.name} ?`,
+    type: "slider",
+    min: 0, max: 9, step: 1,
+    correct: pick.numero,
+    ...opts,
+  };
+}
+
+function makeDeathQ(id, opts = {}) {
+  const pick = _pick(DEATH_POOL);
+  const answers = _shuffle([pick.killer, ...pick.wrong.slice(0, 3)]);
+  return {
+    id,
+    text: `Qui a tué ${pick.victim} ?`,
+    type: "classic",
+    answers,
+    correct: answers.indexOf(pick.killer),
+    ...opts,
+  };
+}
+
+function makeShikaiQ(id, opts = {}) {
+  const pick = _pick(SHIKAI_POOL);
+  const answers = _shuffle([pick.shikai, ...pick.wrong.slice(0, 3)]);
+  return {
+    id,
+    text: `Quel est le Shikai de ${pick.captain} ?`,
+    type: "classic",
+    answers,
+    correct: answers.indexOf(pick.shikai),
+    ...opts,
+  };
+}
+
+/* ──────────────────────────────
+   QUESTIONS
+────────────────────────────── */
 const QUESTIONS = [
   // 1 — Classique piège
   {
@@ -20,22 +124,12 @@ const QUESTIONS = [
     correct: 0,
     bonusSkip: true,
   },
-  // 3 — Slider (nombre)
-  {
-    id: 3,
-    text: "Quel est le numéro d'Espada d'Ulquiorra ?",
-    type: "slider",
-    min: 0, max: 9, step: 1,
-    correct: 4,
-  },
-  // 4 — Classique
-  {
-    id: 4,
-    text: "Qui a tué Kaien Shiba ?",
-    type: "classic",
-    answers: ["Ichigo", "Rukia", "Aizen", "Gin"],
-    correct: 1,
-  },
+  // 3 — POOL : numéro d'Espada aléatoire
+  makeEspadaQ(3),
+
+  // 4 — POOL : qui a tué X ? aléatoire
+  makeDeathQ(4),
+
   // 5 — Piège logique absurde
   {
     id: 5,
@@ -88,15 +182,9 @@ const QUESTIONS = [
     items: ["Arrancar", "Soul Society", "Fullbring", "Thousand-Year Blood War"],
     correctOrder: ["Soul Society", "Arrancar", "Fullbring", "Thousand-Year Blood War"],
   },
-  // 10 — Classique
-  {
-    id: 10,
-    text: "Quel est le Shikai de Byakuya Kuchiki ?",
-    type: "classic",
-    answers: ["Senbonzakura", "Hyōrinmaru", "Ryūjin Jakka", "Wabisuke"],
-    correct: 0,
-    bonusSkip: true,
-  },
+  // 10 — POOL : Shikai d'un capitaine aléatoire
+  makeShikaiQ(10, { bonusSkip: true }),
+
   // 11 — Piège absurde
   {
     id: 11,
@@ -144,15 +232,9 @@ const QUESTIONS = [
     answers: ["Kurosaki", "Shiba", "Quincy", "Hollow"],
     correct: 0,
   },
-  // 16 — Slider
-  {
-    id: 16,
-    text: "Yamamoto est le capitaine-commandant depuis combien de millénaires ?",
-    type: "slider",
-    min: 0, max: 5, step: 1,
-    correct: 1,
-    bonusSkip: true,
-  },
+  // 16 — POOL : numéro d'Espada aléatoire (2e fois)
+  makeEspadaQ(16, { bonusSkip: true }),
+
   // 17 — Piège de logique totale
   {
     id: 17,
@@ -178,19 +260,8 @@ const QUESTIONS = [
     trapLabel: "FAUX",
     bonusSkip: true,
   },
-  // 20 — Finale classique
-  {
-    id: 20,
-    text: "Qui est le véritable ennemi final de Bleach ?",
-    type: "classic",
-    answers: [
-      "Yhwach",
-      "Aizen",
-      "La tante d'Ichigo",
-      "Toi qui pensais avoir fini"
-    ],
-    correct: 0,
-  },
+  // 20 — POOL : qui a tué X ? aléatoire (2e fois)
+  makeDeathQ(20),
 
   // ══════════════════════════════════════════
   // NOUVELLES QUESTIONS
@@ -237,4 +308,7 @@ const QUESTIONS = [
     secretWord: "Fraise",
     bonusSkip: true,
   },
+
+  // 26 — POOL : Shikai aléatoire (3e apparition)
+  makeShikaiQ(26),
 ];
