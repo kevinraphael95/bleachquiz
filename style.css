@@ -46,19 +46,21 @@ html, body {
 .title-logo-wrap { display: flex; flex-direction: column; align-items: center; line-height: 1; }
 .logo-that {
   font-family: var(--font-logo); font-size: clamp(18px,3.5vw,32px);
-  color: #fff; letter-spacing: 10px; text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  color: var(--iq-blue); letter-spacing: 10px;
+  -webkit-text-stroke: clamp(1px,0.3vw,2px) #001188;
 }
+
 .logo-bleach {
   font-family: var(--font-logo); font-size: clamp(60px,18vw,150px);
-  line-height: 0.88; color: #e8f0ff;
-  -webkit-text-stroke: clamp(2px,0.6vw,5px) #e83030;
+  line-height: 0.88; color: var(--iq-red);
+  -webkit-text-stroke: clamp(2px,0.6vw,5px) #880000;
   filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.2));
   animation: wobble 3s ease-in-out infinite;
 }
-@keyframes wobble { 0%,100%{transform:rotate(-1.5deg)} 50%{transform:rotate(1.5deg)} }
+
 .logo-quiz {
   font-family: var(--font-logo); font-size: clamp(22px,6vw,52px);
-  color: #ffe94a; -webkit-text-stroke: clamp(1px,0.4vw,3px) #cc7700;
+  color: var(--iq-blue); -webkit-text-stroke: clamp(1px,0.4vw,3px) #001188;
   filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.25)); letter-spacing: 8px;
 }
 .btn-jouer {
