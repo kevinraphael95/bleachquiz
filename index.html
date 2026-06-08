@@ -10,14 +10,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <svg style="position:absolute;width:0;height:0;overflow:hidden">
-    <defs>
-      <filter id="squiggle">
-        <feTurbulence type="fractalNoise" baseFrequency="0.065" numOctaves="3" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-    </defs>
-  </svg>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
   <!-- ÉCRAN TITRE -->
   <section id="screen-title" class="screen active">
@@ -43,16 +35,19 @@
       <div class="impact-line"></div>
     </div>
     <div class="game-wrap">
+      <!-- Question -->
       <div class="iq-top">
         <div class="question-card" id="question-card">
           <div class="question-number" id="q-num">1</div>
           <div class="question-text" id="q-text"></div>
         </div>
       </div>
+      <!-- Réponses -->
       <div class="iq-mid">
         <div class="special-zone" id="special-zone" hidden></div>
         <div class="answers-grid" id="answers-grid"></div>
       </div>
+      <!-- HUD -->
       <div class="iq-bot">
         <div class="hud-lives" id="hud-lives"></div>
         <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
