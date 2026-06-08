@@ -216,7 +216,7 @@ function startGame(fresh = false) {
 function updateHUD() {
   hudLives.innerHTML = `<span class="hud-lives-count">${STATE.lives}</span>`;
 
-  const MAX_SKIPS = 5;
+  const MAX_SKIPS = 7;
   const displayCount = Math.min(STATE.skips, MAX_SKIPS);
   const pct = Math.round((displayCount / MAX_SKIPS) * 100);
 
