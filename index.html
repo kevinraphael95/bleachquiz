@@ -10,8 +10,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <svg style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <filter id="squiggle">
+        <feTurbulence type="fractalNoise" baseFrequency="0.065" numOctaves="3" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
-
   <!-- ÉCRAN TITRE -->
   <section id="screen-title" class="screen active">
     <div class="bg-lines" aria-hidden="true">
@@ -28,7 +35,6 @@
       <button class="btn-jouer" id="btn-start">JOUER !</button>
     </div>
   </section>
-
   <!-- ÉCRAN JEU -->
   <section id="screen-game" class="screen">
     <div class="bg-lines" aria-hidden="true">
@@ -36,23 +42,17 @@
       <div class="impact-line"></div><div class="impact-line"></div>
       <div class="impact-line"></div>
     </div>
-
     <div class="game-wrap">
-      <!-- Question -->
       <div class="iq-top">
         <div class="question-card" id="question-card">
           <div class="question-number" id="q-num">1</div>
           <div class="question-text" id="q-text"></div>
         </div>
       </div>
-
-      <!-- Réponses -->
       <div class="iq-mid">
         <div class="special-zone" id="special-zone" hidden></div>
         <div class="answers-grid" id="answers-grid"></div>
       </div>
-
-      <!-- HUD -->
       <div class="iq-bot">
         <div class="hud-lives" id="hud-lives"></div>
         <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
@@ -60,7 +60,6 @@
       </div>
     </div>
   </section>
-
   <!-- GAME OVER -->
   <div class="overlay" id="overlay-gameover" hidden>
     <div class="overlay-inner overlay-inner--red">
@@ -69,7 +68,6 @@
       <button class="btn-overlay" id="btn-retry-go">RÉESSAYER</button>
     </div>
   </div>
-
   <!-- VICTOIRE -->
   <div class="overlay" id="overlay-win" hidden>
     <div class="overlay-inner overlay-inner--gold">
@@ -79,7 +77,6 @@
       <button class="btn-overlay btn-overlay--gold" id="btn-retry-win">REJOUER</button>
     </div>
   </div>
-
   <!-- TOASTS -->
   <div class="toast" id="toast">
     <span class="toast-wrong">✗ FAUX !</span>
@@ -88,7 +85,6 @@
   <div class="toast toast--skip" id="toast-skip">
     <span class="toast-skip-text">+1 SKIP ⚡</span>
   </div>
-
   <script src="questions.js?v=3"></script>
   <script src="script.js?v=3"></script>
 </body>
