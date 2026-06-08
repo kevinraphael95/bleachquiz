@@ -78,6 +78,7 @@ const QUESTIONS = [
     text: "Clique sur le mot BANKAI dans cette phrase pour répondre : « Seuls les fools cliquent sur BANKAI »",
     type: "secret_word",
     secretWord: "BANKAI",
+    fakeAnswers: ["Shikai", "Bankai", "Reiatsu", "Zanpakutō"],
   },
   // 9 — Drag & drop ordre
   {
