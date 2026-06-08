@@ -137,7 +137,7 @@ const QUESTIONS = [
     answers: [
       "BOUUH...",
       "J'en ai pour une seconde",
-      "Bien sûr que non   .",
+      "Bien sûr que non",
       "C'est bien toi qui a dit qu'il était gentil!"
     ],
     correct: 3,
