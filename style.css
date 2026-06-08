@@ -114,7 +114,7 @@ html, body {
   font-size: clamp(18px,3.2vw,30px); color: var(--iq-blue); line-height: 1.25; width: 100%;
 }
 
-.q-secret { cursor: pointer; border-bottom: 2px dashed var(--iq-red); transition: opacity .2s; }
+.q-secret { cursor: pointer; transition: opacity .2s; }
 .q-secret:hover { opacity: 0.6; }
 
 /* Boutons réponses */
