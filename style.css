@@ -54,7 +54,7 @@ html, body {
   font-family: var(--font-logo); font-size: clamp(60px,18vw,150px);
   line-height: 0.88; color: var(--iq-red);
   -webkit-text-stroke: clamp(2px,0.6vw,5px) #880000;
-  filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.2));
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.2);
   animation: wobble 3s ease-in-out infinite;
 }
 
