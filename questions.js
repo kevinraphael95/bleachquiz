@@ -262,10 +262,6 @@ const QUESTIONS = [
   // 20 — POOL : qui a tué X ? aléatoire (2e fois)
   makeDeathQ(20),
 
-  // ══════════════════════════════════════════
-  // NOUVELLES QUESTIONS
-  // ══════════════════════════════════════════
-
   {
     id: 21,
     text: "Qui a le Bankai le plus faible parmi ces personnages ?",
@@ -276,38 +272,14 @@ const QUESTIONS = [
 
   {
     id: 22,
-    text: "Lequel de ces personnages n'est PAS roux ?",
+    text: "Lequel de ces personnages n'est pas roux ?",
     type: "classic",
     answers: ["Ichigo", "Orihime", "Komamura", "Matsumoto"],
     correct: 3,
     bonusSkip: true,
   },
 
-  {
-    id: 23,
-    text: "Trouve l'intrus — quel mot n'a AUCUN rapport avec Ichigo ?",
-    type: "word_cluster",
-    words: ["15", "Fraise", "Lune", "Glace"],
-    correct: ["Glace"],
-    multi: false,
-  },
 
-  {
-    id: 24,
-    text: "De quelle race est le capitaine Sajin Komamura ?",
-    type: "classic",
-    answers: ["Humain", "Shinigami renard", "Wolfman / Loup-garou", "Arrancar"],
-    correct: 2,
-  },
-
-  {
-    id: 25,
-    text: "Le prénom Ichigo peut se lire « Fraise » en japonais. Clique sur Fraise pour continuer.",
-    type: "secret_word",
-    secretWord: "Fraise",
-    bonusSkip: true,
-  },
-
-  // 26 — POOL : Shikai aléatoire (3e apparition)
+  // 23 — POOL : Shikai aléatoire (3e apparition)
   makeShikaiQ(26),
 ];
