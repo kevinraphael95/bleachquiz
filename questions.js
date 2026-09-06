@@ -1,5 +1,9 @@
 /* ═══════════════════════════════════════════════════
-   THAT BLEACH QUIZ — questions.js
+   THAT BLEACH QUIZ — questions.js (MODE HARDCORE)
+   Seules les 2 premières questions sont "juste dures".
+   Tout le reste est pensé pour que (presque) personne
+   ne finisse le quiz — mais chaque bonne réponse reste
+   un vrai fait vérifiable, jamais du pur troll.
 ════════════════════════════════════════════════════ */
 
 /* ──────────────────────────────
@@ -106,15 +110,15 @@ function makeShikaiQ(id, opts = {}) {
    QUESTIONS
 ────────────────────────────── */
 const QUESTIONS = [
-  // 1 — Classique piège
+  // 1 — Un peu dure (intro)
   {
     id: 1,
     text: "Combien de temps Ichigo a-t-il mis pour maîtriser le Bankai ?",
     type: "classic",
-    answers: ["1 jour", "2 jours", "3 jours", "Il ne l'a jamais maîtrisé"],
+    answers: ["1 jour", "2 jours", "3 jours", "Il ne l'a jamais vraiment maîtrisé"],
     correct: 3,
   },
-  // 2 — Piège de lecture
+  // 2 — Un peu dure (intro, piège de lecture)
   {
     id: 2,
     text: "Qui gagnerai un combat en free for all ?",
@@ -129,7 +133,7 @@ const QUESTIONS = [
   // 4 — POOL : qui a tué X ? aléatoire
   makeDeathQ(4),
 
-  // 5 — Piège logique absurde
+  // 5 — Piège logique absurde (giga dur par nature, garde le format original)
   {
     id: 5,
     text: "Qu'y a-t-il écrit dans la première bulle de la deuxième case de la page 99 du tome 32 ?",
@@ -143,16 +147,16 @@ const QUESTIONS = [
     correct: 3,
     bonusSkip: true,
   },
-  // 6 — Couleurs
+  // 6 — Couleur du Hōgyoku (labels neutres, plus de triche possible)
   {
     id: 6,
-    text: "Quelle est la couleur du Hōgyoku ?",
+    text: "Quelle est la véritable couleur du Hōgyoku ?",
     type: "colors",
     swatches: [
-      { label: "ROUGE",  color: "#c8000a" },
-      { label: "HOGYOKU", color: "#8b00ff" },
-      { label: "OR",     color: "#d4a017" },
-      { label: "BLANC",  color: "#e8e8e8" }
+      { label: "A", color: "#c8000a" },
+      { label: "B", color: "#8b00ff" },
+      { label: "C", color: "#d4a017" },
+      { label: "D", color: "#2050c0" }
     ],
     correct: 1,
   },
@@ -173,13 +177,13 @@ const QUESTIONS = [
     secretWord: "BANKAI",
     fakeAnswers: ["Shikai", "Bankai", "Fullbring", "Zanpakutō"],
   },
-  // 9 — Drag & drop ordre
+  // 9 — Drag & drop : ordre chronologique, corsé avec 5 arcs
   {
     id: 9,
     text: "Remets les arcs dans l'ordre chronologique :",
     type: "drag",
-    items: ["Arrancar", "Soul Society", "Fullbring", "Thousand-Year Blood War"],
-    correctOrder: ["Soul Society", "Arrancar", "Fullbring", "Thousand-Year Blood War"],
+    items: ["Arrancar", "Soul Society", "Fullbring", "Thousand-Year Blood War", "Dark Horse"],
+    correctOrder: ["Soul Society", "Arrancar", "Fullbring", "Thousand-Year Blood War", "Dark Horse"],
   },
   // 10 — POOL : Shikai d'un capitaine aléatoire
   makeShikaiQ(10, { bonusSkip: true }),
@@ -197,12 +201,12 @@ const QUESTIONS = [
     ],
     correct: 3,
   },
-  // 12 — Cluster multi-select
+  // 12 — Cluster multi-select, corsé avec 2 leurres en plus
   {
     id: 12,
     text: "Quels personnages font partie de la Division Zéro ?",
     type: "word_cluster",
-    words: ["Ichibe Hyōsube", "Senjumaru Shutara", "Gremmy Thoumeaux", "Tenjirō Kirinji", "Lille Barro", "Kirio Hikifune"],
+    words: ["Ichibe Hyōsube", "Senjumaru Shutara", "Gremmy Thoumeaux", "Tenjirō Kirinji", "Lille Barro", "Kirio Hikifune", "Kūkaku Shiba", "Nemu Kurotsuchi"],
     correct: ["Ichibe Hyōsube", "Senjumaru Shutara", "Tenjirō Kirinji", "Kirio Hikifune"],
     multi: true,
   },
@@ -215,21 +219,21 @@ const QUESTIONS = [
     correct: 2,
     bonusSkip: true,
   },
-  // 14 — Hidden (trouver le bon parmi les faux)
+  // 14 — Hidden, corsé avec 6 leurres au lieu de 4
   {
     id: 14,
     text: "Trouve et clique sur le Zanpakutō caché parmi les imposteurs :",
     type: "hidden",
-    decoys: ["GETSUO", "ZANPAKTU", "SENBONZAKUTA", "HYŌRIMARU"],
+    decoys: ["GETSUO", "ZANPAKTU", "SENBONZAKUTA", "HYŌRIMARU", "ZANGETSO", "ZENGATSU"],
     correct_text: "ZANGETSU",
   },
-  // 15 — Classique
+  // 15 — Remplace l'ancienne question trop facile (Kurosaki) par un vrai fait obscur
   {
     id: 15,
-    text: "Quel est le vrai nom de famille d'Ichigo ?",
+    text: "Quel est le nom de famille d'origine d'Isshin, le père d'Ichigo, avant son mariage ?",
     type: "classic",
-    answers: ["Kurosaki", "Shiba", "Quincy", "Hollow"],
-    correct: 0,
+    answers: ["Kurosaki", "Shiba", "Kuchiki", "Shihōin"],
+    correct: 1,
   },
   // 16 — POOL : numéro d'Espada aléatoire (2e fois)
   makeEspadaQ(16, { bonusSkip: true }),
@@ -281,5 +285,5 @@ const QUESTIONS = [
 
 
   // 23 — POOL : Shikai aléatoire (3e apparition)
-  makeShikaiQ(26),
+  makeShikaiQ(23),
 ];
