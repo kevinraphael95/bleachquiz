@@ -19,22 +19,22 @@ const ESPADA_POOL = [
 ];
 
 const DEATH_POOL = [
-  { victim:"Kaien Shiba",          killer:"Rukia",                              wrong:["Metastacia","Aizen","Gin Ichimaru"] },
-  { victim:"Yamamoto",             killer:"Yhwach",                             wrong:["Aizen","Ichigo","Ulquiorra"] },
-  { victim:"Grand Fisher",         killer:"Isshin",                             wrong:["Ichigo","Rukia","Urahara"] },
-  { victim:"Ulquiorra",            killer:"Ichigo",                             wrong:["Orihime","Uryū","Grimmjow"] },
-  { victim:"Gin Ichimaru",         killer:"Aizen",                              wrong:["Rangiku","Ichigo","Tōsen"] },
-  { victim:"Nnoitra Gilga",        killer:"Kenpachi",                           wrong:["Ichigo","Byakuya","Nelliel"] },
-  { victim:"Szayelaporro Granz",   killer:"Mayuri",                             wrong:["Uryū","Renji","Nemu"] },
-  { victim:"Baraggan",             killer:"Hachi",                              wrong:["Soi Fon","Ōmaeda","Yamamoto"] },
-  { victim:"Zommari Rureaux",      killer:"Byakuya",                            wrong:["Renji","Rukia","Hitsugaya"] },
-  { victim:"Coyote Starrk",        killer:"Shunsui",                            wrong:["Ukitake","Love","Rose"] },
+  { victim:"Kaien Shiba",          killer:"Rukia",                         wrong:["Metastacia","Aizen","Gin Ichimaru"] },
+  { victim:"Yamamoto",             killer:"Yhwach",                        wrong:["Aizen","Ichigo","Ulquiorra"] },
+  { victim:"Grand Fisher",          killer:"Isshin",                        wrong:["Ichigo","Rukia","Urahara"] },
+  { victim:"Ulquiorra",            killer:"Ichigo",                        wrong:["Orihime","Uryū","Grimmjow"] },
+  { victim:"Gin Ichimaru",          killer:"Aizen",                         wrong:["Rangiku","Ichigo","Tōsen"] },
+  { victim:"Nnoitra Gilga",        killer:"Kenpachi",                      wrong:["Ichigo","Byakuya","Nelliel"] },
+  { victim:"Szayelaporro Granz",   killer:"Mayuri",                        wrong:["Uryū","Renji","Nemu"] },
+  { victim:"Baraggan",             killer:"Hachi",                         wrong:["Soi Fon","Ōmaeda","Yamamoto"] },
+  { victim:"Zommari Rureaux",      killer:"Byakuya",                       wrong:["Renji","Rukia","Hitsugaya"] },
+  { victim:"Coyote Starrk",        killer:"Shunsui",                       wrong:["Ukitake","Love","Rose"] },
   { victim:"Aizen Sōsuke",         killer:"Personne — il est emprisonné à vie", wrong:["Ichigo","Urahara","Yamamoto"] },
-  { victim:"As Nodt",              killer:"Uryū Ishida",                        wrong:["Ichigo","Renji","Chad"] },
-  { victim:"Cang Du",              killer:"Chad",                               wrong:["Renji","Ichigo","Rukia"] },
-  { victim:"Bambietta Basterbine", killer:"Ikkaku Madarame",                    wrong:["Yumichika","Renji","Rukia"] },
-  { victim:"Charlotte Cuulhorne",  killer:"Yumichika Ayasegawa",                wrong:["Ikkaku","Renji","Chad"] },
-  { victim:"Yylfordt Granz",       killer:"Renji Abarai",                       wrong:["Ichigo","Chad","Uryū"] },
+  { victim:"As Nodt",              killer:"Rukia Kuchiki",                 wrong:["Ichigo","Renji","Chad"] },
+  { victim:"Cang Du",              killer:"Jugram Haschwalth",             wrong:["Renji","Ichigo","Rukia"] },
+  { victim:"Bambietta Basterbine", killer:"Giselle Gewelle",               wrong:["Yumichika","Renji","Rukia"] },
+  { victim:"Charlotte Cuulhorne",  killer:"Yumichika Ayasegawa",           wrong:["Ikkaku","Renji","Chad"] },
+  { victim:"Yylfordt Granz",       killer:"Renji Abarai",                  wrong:["Ichigo","Chad","Uryū"] },
 ];
 
 const SHIKAI_POOL = [
@@ -57,15 +57,15 @@ const SHIKAI_POOL = [
 ];
 
 const STERNRITTER_POOL = [
-  { name:"Yhwach",               schrift:"The Almighty",      wrong:["The Balance","The Deathdealing","The Miracle"] },
+  { name:"Yhwach",                schrift:"The Almighty",      wrong:["The Balance","The Deathdealing","The Miracle"] },
   { name:"Jugram Haschwalth",    schrift:"The Balance",       wrong:["The Almighty","The Heat","The Iron"] },
   { name:"Askin Nakk Le Vaar",   schrift:"The Deathdealing",  wrong:["The Explode","The Zombie","The Thunderbolt"] },
   { name:"Bambietta Basterbine", schrift:"The Explode",       wrong:["The Glutton","The Ugly","The Superstar"] },
   { name:"Giselle Gewelle",      schrift:"The Zombie",        wrong:["The Heat","The Miracle","The Iron"] },
   { name:"Candice Catnipp",      schrift:"The Thunderbolt",   wrong:["The Deathdealing","The Balance","The Explode"] },
-  { name:"Liltotto Lamperd",     schrift:"The Glutton",       wrong:["The Ugly","The Superstar","The Zombie"] },
-  { name:"Bazz-B",               schrift:"The Heat",          wrong:["The Iron","The Miracle","The Almighty"] },
-  { name:"Gremmy Thoumeaux",     schrift:"The Miracle",       wrong:["The Thunderbolt","The Glutton","The Heat"] },
+  { name:"Liltotto Lamperd",      schrift:"The Glutton",       wrong:["The Ugly","The Superstar","The Zombie"] },
+  { name:"Bazz-B",                schrift:"The Heat",          wrong:["The Iron","The Miracle","The Almighty"] },
+  { name:"Gremmy Thoumeaux",     schrift:"The Visionary",     wrong:["The Thunderbolt","The Glutton","The Heat"] },
   { name:"Cang Du",              schrift:"The Iron",          wrong:["The Superstar","The Ugly","The Balance"] },
   { name:"Mask De Masculine",    schrift:"The Superstar",     wrong:["The Glutton","The Heat","The Deathdealing"] },
 ];
@@ -73,7 +73,7 @@ const STERNRITTER_POOL = [
 const VIZARD_POOL = [
   { name:"Kensei Muguruma",             shikai:"Tachikaze",       wrong:["Kinshara","Tsunzakigarasu","Kubikiri Orochi"] },
   { name:"Rojuro « Rose » Otoribashi",  shikai:"Kinshara",        wrong:["Tachikaze","Haguro Tonbo","Kubikiri Orochi"] },
-  { name:"Mashiro Kuna",                shikai:"Tsunzakigarasu",  wrong:["Tachikaze","Kinshara","Haguro Tonbo"] },
+  { name:"Mashiro Kuna",                shikai:"Tsunzakigarasu", wrong:["Tachikaze","Kinshara","Haguro Tonbo"] },
   { name:"Hiyori Sarugaki",             shikai:"Kubikiri Orochi", wrong:["Tsunzakigarasu","Kinshara","Tachikaze"] },
   { name:"Lisa Yadomaru",               shikai:"Haguro Tonbo",    wrong:["Kubikiri Orochi","Tachikaze","Kinshara"] },
 ];
@@ -84,7 +84,7 @@ const FRACCION_POOL = [
   { member:"Edrad Liones",        boss:"Grimmjow Jaegerjaquez", wrong:["Ulquiorra Cifer","Tia Harribel","Aaroniero Arruruerie"] },
   { member:"Nakeem Grindina",     boss:"Grimmjow Jaegerjaquez", wrong:["Coyote Starrk","Szayelaporro Granz","Baraggan Louisenbairn"] },
   { member:"Yylfordt Granz",      boss:"Grimmjow Jaegerjaquez", wrong:["Ulquiorra Cifer","Nnoitra Gilga","Tia Harribel"] },
-  { member:"Di Roy Rinker",       boss:"Grimmjow Jaegerjaquez", wrong:["Zommari Rureaux","Coyote Starrk","Aaroniero Arruruerie"] },
+  { member:"Di Roy Rinker",        boss:"Grimmjow Jaegerjaquez", wrong:["Zommari Rureaux","Coyote Starrk","Aaroniero Arruruerie"] },
   { member:"Franceska Mila Rose", boss:"Tia Harribel",          wrong:["Baraggan Louisenbairn","Nnoitra Gilga","Grimmjow Jaegerjaquez"] },
   { member:"Sung-Sun",            boss:"Tia Harribel",          wrong:["Ulquiorra Cifer","Coyote Starrk","Zommari Rureaux"] },
   { member:"Emilou Apacci",       boss:"Tia Harribel",          wrong:["Aaroniero Arruruerie","Szayelaporro Granz","Grimmjow Jaegerjaquez"] },
@@ -138,10 +138,10 @@ const FIXED_QUESTIONS = [
     "Révélé pendant la guerre des mille ans : le « Zangetsu » qu'Ichigo connaissait était en réalité la manifestation de son héritage Quincy."
   ),
   mcQuestion(
-    "Pourquoi Bleach s'est-il terminé de façon aussi abrupte dans le Weekly Shōnen Jump ?",
-    "Le manga a chuté dans les sondages de popularité du magazine",
-    ["Tite Kubo est tombé malade", "L'éditeur a annulé la série sans raison", "Kubo avait prévu cette fin depuis le début"],
-    "Bleach a été précipité vers sa fin après une chute dans les classements de popularité hebdomadaires du Jump."
+    "Pourquoi Tite Kubo a-t-il dû précipiter la fin du manga Bleach ?",
+    "En raison de graves problèmes de santé de l'auteur",
+    ["Le manga a chuté dans les sondages de popularité", "L'éditeur a annulé la série sans raison", "Kubo avait prévu cette fin depuis le début"],
+    "Tite Kubo souffrait de graves problèmes de santé physique (notamment une rupture de ligaments à l'épaule) et a convenu avec l'éditeur de terminer la série plus tôt."
   ),
   {
     type:'multi',
@@ -151,10 +151,10 @@ const FIXED_QUESTIONS = [
     explain:"Les 8 Vizards originels : Shinji, Kensei, Rose, Mashiro, Hiyori, Lisa, Love et Hachigen."
   },
   mcQuestion(
-    "Quel est le nom de la technique Quincy permettant de voler un Bankai ?",
-    "Sklaverei",
-    ["Blut Vene", "Vollständig", "Auswählen"],
-    "Sklaverei est la technique Quincy utilisée pendant la guerre des mille ans pour sceller et voler un Bankai."
+    "Quel objet les Quincy utilisent-ils pour voler un Bankai pendant la guerre des mille ans ?",
+    "Le Médaillon Quincy",
+    ["Sklaverei", "Blut Vene", "Auswählen"],
+    "Les Quincy utilisent un Médaillon spécifique (Medallion) pour dérober le Bankai d'un Shinigami."
   ),
   mcQuestion(
     "Qu'est-ce qui a permis à Ichigo de retrouver ses pouvoirs après les avoir perdus suite à Mugetsu ?",
@@ -175,16 +175,16 @@ const FIXED_QUESTIONS = [
     "Suzumebachi tue en frappant deux fois exactement le même endroit : c'est le Nigeki Kesshatsu."
   ),
   mcQuestion(
-    "Quel est le nom de la technique Quincy permettant de voler et absorber les pouvoirs d'un Hollow ou d'un Shinigami ?",
+    "Quel est le nom du pouvoir suprême d'Yhwach lui permettant d'éveiller la puissance des Quincy et d'absorber la leur ?",
     "Auswählen",
     ["Sklaverei", "Vollständig", "Gintō"],
-    "Auswählen est la technique de vol de pouvoir utilisée par certains Sternritter, notamment Askin et Yhwach."
+    "Auswählen est la technique de redistribution et de sélection des pouvoirs utilisée par Yhwach."
   ),
   mcQuestion(
-    "Combien de Mod-Souls (Konpaku Modifiés) Kisuke Urahara a-t-il fabriqués à l'origine, dont Kon fait partie ?",
-    "100",
-    ["10", "50", "1000"],
-    "Urahara en a créé 100 ; la Soul Society en a ordonné la destruction, seul Kon a survécu, caché dans une peluche."
+    "Dans quel cadre les âmes modifiées (Mod-Souls) comme Kon ont-elles été créées à l'origine ?",
+    "Le projet Spearhead de la Soul Society",
+    ["Un laboratoire secret de Urahara", "Une expérience de Mayuri Kurotsuchi", "Une création du Sereitei par Aizen"],
+    "Les Mod-Souls ont été conçus par les chercheurs de la Soul Society dans le cadre du projet Spearhead avant d'être ordonnés à la destruction."
   ),
   mcQuestion(
     "Quel élément est associé à Tiburón, le Zanpakutō de Tia Harribel ?",
@@ -211,10 +211,10 @@ const FIXED_QUESTIONS = [
     "Le cache-œil de Kenpachi n'a rien d'esthétique : il contient une partie de son Reiatsu écrasant."
   ),
   mcQuestion(
-    "Quel est le nom du fragment du Roi des Âmes révélé pendant la guerre des mille ans, lié au clan Shiba ?",
-    "Mimihagi",
-    ["Ōetsu Nimaiya", "Ichibe Hyōsube", "Yhwach"],
-    "Mimihagi est un fragment du Roi des Âmes vénéré et protégé par le clan Shiba."
+    "Qui est Mimihagi dans l'univers de Bleach ?",
+    "La main droite du Roi des Âmes",
+    ["Un fragment du Roi des Âmes lié au clan Shiba", "Un membre de la Division Zéro", "Un Sternritter légendaire"],
+    "Mimihagi est la main droite incarnée du Roi des Âmes, révélée lorsqu'elle sauve Jūshirō Ukitake."
   ),
   mcQuestion(
     "Quel est le titre du light novel officiel qui sert de suite directe à la fin du manga Bleach ?",
@@ -223,10 +223,10 @@ const FIXED_QUESTIONS = [
     "Écrit par Ryōhgo Narita, « Can't Fear Your Own World » prolonge l'histoire après le dernier chapitre du manga."
   ),
   mcQuestion(
-    "Quel light novel officiel Bleach raconte la rencontre entre le jeune Kenpachi Zaraki et Yachiru, avant le début de la série ?",
-    "We Do Not Know Yet",
-    ["Can't Fear Your Own World", "Spirits Are Forever With You", "Bleach: Bad Vibes Only"],
-    "« We Do Not Know Yet », de Makoto Matsubara, est un préquel centré sur la rencontre de Kenpachi et Yachiru."
+    "Quel est le titre du light novel officiel écrit par Makoto Matsubara se déroulant juste après la défaite d'Aizen ?",
+    "The Honey Dish Rhapsody",
+    ["Can't Fear Your Own World", "Spirits Are Forever With You", "We Do Not Know Yet"],
+    "« The Honey Dish Rhapsody » raconte les événements survenus une semaine après la défaite d'Aizen à la Soul Society."
   ),
 ];
 
