@@ -1,86 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>That Bleach Quiz</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Shrikhand&family=Kalam:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Examen Impossible — Bleach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="bg-canvas" aria-hidden="true"></canvas>
-  <!-- ÉCRAN TITRE -->
-  <section id="screen-title" class="screen active">
-    <div class="bg-lines" aria-hidden="true">
-      <div class="impact-line"></div><div class="impact-line"></div>
-      <div class="impact-line"></div><div class="impact-line"></div>
-      <div class="impact-line"></div>
+
+  <div class="rail rail--left">審 査 の 間 ・ 誰 も 合 格 し な い</div>
+  <div class="rail rail--right">霊 力 検 定 ・ 不 可 能 な 試 験</div>
+
+  <main class="sheet" id="app">
+
+    <div class="sheet-top">
+      <div class="brand">L'EXAMEN IMPOSSIBLE<small>ÉPREUVE DE SAVOIR — BLEACH</small></div>
+      <div class="lives" id="lives-display"></div>
     </div>
-    <div class="title-content">
-      <div class="title-logo-wrap">
-        <div class="logo-that">THAT</div>
-        <div class="logo-bleach">BLEACH</div>
-        <div class="logo-quiz">QUIZ</div>
+
+    <!-- ÉCRAN DE DÉPART -->
+    <section id="screen-start">
+      <div class="stamp">SAVOIR<br>ABSOLU</div>
+      <h1 class="title">Prouve que tu connais<br>vraiment tout de Bleach.</h1>
+      <p class="lede">Manga, arcs annexes, Fracción, Rukongai, light novels officiels : rien n'est inventé, tout est vérifiable — mais poussé dans les recoins que même les fans acharnés oublient. Conçu pour que (presque) personne n'aille au bout.</p>
+      <ul class="rules">
+        <li>3 vies. Une mauvaise réponse en coûte une.</li>
+        <li>Les questions changent à chaque partie (tirage aléatoire dans plusieurs banques).</li>
+        <li>Aucune question n'est injuste : tout est vérifiable dans le canon (manga + light novels officiels).</li>
+      </ul>
+      <button class="btn-primary" id="btn-start">COMMENCER L'EXAMEN</button>
+    </section>
+
+    <!-- ÉCRAN QUESTION -->
+    <section id="screen-quiz">
+      <div class="q-meta">
+        <span id="q-count">QUESTION 1 / 20</span>
+        <span id="q-score">0 CORRECTES</span>
       </div>
-      <button class="btn-jouer" id="btn-start">JOUER !</button>
-    </div>
-  </section>
-  <!-- ÉCRAN JEU -->
-  <section id="screen-game" class="screen">
-    <div class="bg-lines" aria-hidden="true">
-      <div class="impact-line"></div><div class="impact-line"></div>
-      <div class="impact-line"></div><div class="impact-line"></div>
-      <div class="impact-line"></div>
-    </div>
-    <div class="game-wrap">
-      <!-- Question -->
-      <div class="iq-top">
-        <div class="question-card" id="question-card">
-          <div class="question-number" id="q-num">1</div>
-          <div class="question-text" id="q-text"></div>
-        </div>
+      <div class="q-progress-track"><div class="q-progress-fill" id="q-progress"></div></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-hint" id="q-hint" style="display:none;"></div>
+      <div id="q-body"></div>
+      <div class="explain" id="q-explain"></div>
+      <div class="next-row" id="next-row">
+        <button class="btn-primary" id="btn-next" style="padding:11px 26px; font-size:14px;">SUIVANT →</button>
       </div>
-      <!-- Réponses -->
-      <div class="iq-mid">
-        <div class="special-zone" id="special-zone" hidden></div>
-        <div class="answers-grid" id="answers-grid"></div>
-      </div>
-      <!-- HUD -->
-      <div class="iq-bot">
-        <div class="hud-lives" id="hud-lives"></div>
-        <button class="btn-ingame-restart" id="btn-ingame-restart" title="Recommencer">↺</button>
-        <div class="hud-skips" id="hud-skips"></div>
-      </div>
-    </div>
-  </section>
-  <!-- GAME OVER -->
-  <div class="overlay" id="overlay-gameover" hidden>
-    <div class="overlay-inner overlay-inner--red">
-      <h1 class="overlay-title">GAME<br>OVER</h1>
-      <p class="overlay-sub">Perdu à la question <strong id="go-qnum">?</strong></p>
-      <button class="btn-overlay" id="btn-retry-go">RÉESSAYER</button>
-    </div>
-  </div>
-  <!-- VICTOIRE -->
-  <div class="overlay" id="overlay-win" hidden>
-    <div class="overlay-inner overlay-inner--gold">
-      <h1 class="overlay-title overlay-title--gold">BRAVO !</h1>
-      <p class="overlay-sub">Tu as survécu. Même Aizen est impressionné.</p>
-      <div class="win-rank" id="win-rank"></div>
-      <button class="btn-overlay btn-overlay--gold" id="btn-retry-win">REJOUER</button>
-    </div>
-  </div>
-  <!-- TOASTS -->
-  <div class="toast" id="toast">
-    <span class="toast-wrong">✗ FAUX !</span>
-    <span class="toast-life">−1 VIE</span>
-  </div>
-  <div class="toast toast--skip" id="toast-skip">
-    <span class="toast-skip-text">+1 SKIP ⚡</span>
-  </div>
-  <script src="questions.js?v=3"></script>
-  <script src="script.js?v=3"></script>
+    </section>
+
+    <!-- ÉCHEC -->
+    <section id="screen-fail" class="end-screen">
+      <div class="end-stamp fail">REFUSÉ</div>
+      <p class="end-sub">Éliminé à la question <b id="fail-qnum">?</b><br>Score final : <b id="fail-score">0</b> bonnes réponses.</p>
+      <button class="btn-primary" id="btn-retry-fail">RETENTER L'EXAMEN</button>
+    </section>
+
+    <!-- VICTOIRE -->
+    <section id="screen-win" class="end-screen">
+      <div class="end-stamp win">ADMIS</div>
+      <p class="end-sub">Improbable. Tu as répondu correctement aux <b id="win-total">20</b> questions sans perdre tes 3 vies.<br>Le titre de Maître de Bleach t'appartient.</p>
+      <button class="btn-primary" id="btn-retry-win">REJOUER</button>
+    </section>
+
+  </main>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
